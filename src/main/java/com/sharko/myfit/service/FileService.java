@@ -1,8 +1,11 @@
 package com.sharko.myfit.service;
 
+import com.sharko.myfit.exeption.UploadExeption;
 import io.minio.*;
 import io.minio.http.Method;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,32 +13,41 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
 
     private final MinioClient minioClient;
+
     @Value("${minio.bucket-name}")
     private String bucketName;
 
-    public String uploadFile(MultipartFile file) {
+    @PostConstruct
+    public void initializeBucket() {
         try {
-
-            System.out.println("Проверяем существование bucket: " + bucketName);
+            log.info("Проверяем существование bucket: " + bucketName);
             boolean isBucketExist = minioClient.bucketExists(
                     BucketExistsArgs.builder().bucket(bucketName).build()
             );
-            System.out.println("Bucket существует? " + isBucketExist);
+            log.info("Bucket существует? " + isBucketExist);
 
             if (!isBucketExist) {
-                System.out.println("Создаем bucket: " + bucketName);
+                log.info("Создаем bucket: " + bucketName);
                 minioClient.makeBucket(
                         MakeBucketArgs.builder().bucket(bucketName).build()
                 );
             }
+        } catch (Exception e) {
+            log.error("Ошибка при инициализации бакета: {}", e.getMessage());
+            throw new RuntimeException("Ошибка при создании бакета", e);
+        }
+    }
 
+    public String uploadFile(MultipartFile file) {
+        try {
             String objectName = file.getOriginalFilename();
-            System.out.println("Загружаем файл: " + objectName);
+            log.info("Загружаем файл: " + objectName);
 
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -46,7 +58,7 @@ public class FileService {
                             .build()
             );
 
-            System.out.println("Файл загружен, создаем URL.");
+            log.info("Файл загружен, создаем URL.");
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .bucket(bucketName)
@@ -57,8 +69,7 @@ public class FileService {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Ошибка загрузки файла в MinIO", e);
+            throw new UploadExeption("Ошибка загрузки файла в MinIO: " + e.getMessage() + e);
         }
     }
 }
