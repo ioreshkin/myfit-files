@@ -1,4 +1,4 @@
-package com.sharko.myfit.exeption;
+package center.myfit.exeption;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(UploadExeption.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseError handleExeption (UploadExeption e){
         log.error(e.getMessage(), e);
@@ -19,9 +19,9 @@ public class CustomExceptionHandler {
     }
 
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseError handleExeption (RuntimeException e){
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseError handleExeption (Exception e){
         log.error(e.getMessage(), e);
         return new ResponseError(HttpStatus.BAD_REQUEST, e.getMessage());
     }

@@ -1,6 +1,6 @@
-package com.sharko.myfit.controller;
+package center.myfit.controller;
 
-import com.sharko.myfit.service.FileService;
+import center.myfit.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

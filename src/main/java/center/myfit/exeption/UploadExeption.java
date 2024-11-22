@@ -1,4 +1,4 @@
-package com.sharko.myfit.exeption;
+package center.myfit.exeption;
 
 public class UploadExeption extends RuntimeException {
 

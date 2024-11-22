@@ -1,6 +1,6 @@
-package com.sharko.myfit.service;
+package center.myfit.service;
 
-import com.sharko.myfit.exeption.UploadExeption;
+import center.myfit.exeption.UploadExeption;
 import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
@@ -26,14 +26,14 @@ public class FileService {
     @PostConstruct
     public void initializeBucket() {
         try {
-            log.info("Проверяем существование bucket: " + bucketName);
+            log.info("Проверяем существование bucket: {}", bucketName);
             boolean isBucketExist = minioClient.bucketExists(
                     BucketExistsArgs.builder().bucket(bucketName).build()
             );
-            log.info("Bucket существует? " + isBucketExist);
+            log.info("Bucket существует? {}", isBucketExist);
 
             if (!isBucketExist) {
-                log.info("Создаем bucket: " + bucketName);
+                log.info("Создаем bucket: {}", bucketName);
                 minioClient.makeBucket(
                         MakeBucketArgs.builder().bucket(bucketName).build()
                 );
@@ -47,7 +47,7 @@ public class FileService {
     public String uploadFile(MultipartFile file) {
         try {
             String objectName = file.getOriginalFilename();
-            log.info("Загружаем файл: " + objectName);
+            log.info("Загружаем файл: {}", objectName);
 
             minioClient.putObject(
                     PutObjectArgs.builder()

@@ -8,8 +8,3 @@ minio:
   secret-key: admin123
   bucket-name: minio1
 
-logging:
-  config: classpath:log4j2.xml
-  level:
-    root: info
-    # org.springframework: DEBUG

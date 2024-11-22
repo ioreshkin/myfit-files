@@ -1,4 +1,4 @@
-package com.sharko.myfit.exeption;
+package center.myfit.exeption;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

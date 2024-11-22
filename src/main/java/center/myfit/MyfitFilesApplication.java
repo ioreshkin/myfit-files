@@ -1,4 +1,4 @@
-package com.sharko.myfit;
+package center.myfit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
