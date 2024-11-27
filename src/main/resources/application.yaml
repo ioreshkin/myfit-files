@@ -18,23 +18,11 @@ spring:
 cors:
     url: ${CORS_URL:http://localhost:3000}
 
-keycloak:
-    url: http://localhost:8080
-    realm: master
-    username: admin
-    password: pw
-    client-id: admin-cli
 
 minio:
-    url: http://127.0.0.1:9000
-    access-key: admin
-    secret-key: admin123
-    bucket-name: minio1
+  url: ${MINIO_URL:http://127.0.0.1:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:admin123}
+  bucket-name: ${MINIO_BUCKET_NAME:minio1}
 
-#  spring:
-#    security:
-#      oauth2:
-#        resourceserver:
-#          jwt:
-#            jwk-set-uri: http://localhost:8080/realms/myfit/protocol/openid-connect/certs
-#
+
