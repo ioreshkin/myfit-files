@@ -13,7 +13,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(UploadExeption.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseError handleExeption (UploadExeption e){
+    public ResponseError handleExeption(UploadExeption e) {
         log.error(e.getMessage(), e);
         return new ResponseError(HttpStatus.BAD_REQUEST, e.getMessage());
     }
@@ -21,7 +21,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseError handleExeption (Exception e){
+    public ResponseError handleExeption(Exception e) {
         log.error(e.getMessage(), e);
         return new ResponseError(HttpStatus.BAD_REQUEST, e.getMessage());
     }
