@@ -10,10 +10,38 @@ services:
     volumes:
       - minio_data:/data
       - minio_config:/root/.minio
-    environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=admin123
+    env_file:
+      - .env-minio
     command: server /data --console-address ":9001"
+
+
+  postgres:
+    image: postgres:15.8-alpine3.20
+    container_name: postgres
+    restart: on-failure
+    env_file: .env-postgres
+    healthcheck:
+      test: pg_isready -d fit
+      interval: 5s
+      timeout: 33s
+      retries: 3
+      start_period: 5s
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+
+  keycloak:
+      build:
+        context: .
+      container_name: keycloak
+      command: [ "start", "--db", "postgres", "--hostname-strict-https", "false",  "--hostname-strict", "false",  "--proxy", "edge", "--http-enabled", "true", "--import-realm",  "--spi-user-profile-legacy-user-profile-read-only-attributes", "*_RES_ACCESS_MODE" ]
+      env_file: .env-keycloak
+      ports:
+        - 8080:8080
+      depends_on:
+        postgres:
+          condition: service_healthy
+
+
 
 volumes:
   minio_data:
