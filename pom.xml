@@ -12,8 +12,19 @@
     <groupId>center.myfit</groupId>
     <artifactId>myfit-files</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>myfit-files</name>
     <description>myfit-files</description>
+
+    <repositories>
+        <repository>
+            <id>maven-central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>github</id>
+            <name>GitHub PavelSharko Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/PavelSharko/oauth2-resource-server-starter</url>
+        </repository>
+    </repositories>
 
 
     <properties>
@@ -34,8 +45,9 @@
 
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            <groupId>center.myfit</groupId>
+            <artifactId>oauth2-resource-server-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!--        database-->
