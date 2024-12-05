@@ -16,13 +16,11 @@
 
     <repositories>
         <repository>
-            <id>maven-central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
             <id>github</id>
-            <name>GitHub PavelSharko Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/PavelSharko/oauth2-resource-server-starter</url>
+            <url>https://maven.pkg.github.com/ioreshkin/myfit-common</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
     </repositories>
 
@@ -33,6 +31,12 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>center.myfit</groupId>
+            <artifactId>myfit-spring-boot-starter</artifactId>
+            <version>0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -41,13 +45,6 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.5.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>center.myfit</groupId>
-            <artifactId>oauth2-resource-server-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!--        database-->

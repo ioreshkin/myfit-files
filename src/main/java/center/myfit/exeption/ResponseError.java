@@ -13,7 +13,7 @@ public class ResponseError {
 
     private final String message;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-            private final LocalDateTime time = LocalDateTime.now();
+    private final LocalDateTime time = LocalDateTime.now();
 
     public ResponseError(HttpStatus status, String message) {
         this.status = status;
