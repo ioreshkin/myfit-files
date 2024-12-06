@@ -12,8 +12,17 @@
     <groupId>center.myfit</groupId>
     <artifactId>myfit-files</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>myfit-files</name>
     <description>myfit-files</description>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/ioreshkin/myfit-common</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 
     <properties>
@@ -22,20 +31,26 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>center.myfit</groupId>
+            <artifactId>myfit-spring-boot-starter</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.2.0</version>
         </dependency>
 
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.5.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
         <!--        database-->

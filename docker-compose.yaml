@@ -41,6 +41,14 @@ services:
         postgres:
           condition: service_healthy
 
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq
+    env_file: .env-keycloak
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 
 
 volumes:
