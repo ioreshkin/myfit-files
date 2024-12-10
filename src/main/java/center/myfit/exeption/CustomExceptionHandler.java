@@ -1,6 +1,5 @@
 package center.myfit.exeption;
 
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,16 +32,5 @@ public class CustomExceptionHandler {
     log.error(e.getMessage(), e);
     return new ResponseError(HttpStatus.BAD_REQUEST, e.getMessage());
   }
-
-  /**
-   * обработка ошибки валидации запроса.
-   */
-  @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-  public ResponseError handleExeption(ValidationException e) {
-    log.error(e.getMessage(), e);
-    return new ResponseError(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-  }
-
 
 }

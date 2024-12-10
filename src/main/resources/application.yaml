@@ -16,12 +16,18 @@ spring:
       username: ${DB_USER:app}
       password: ${DB_PASSWORD:pass}
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:pavel}
+    password: ${RABBITMQ_DEFAULT_PASS:pavel}
+
   cloud:
     openfeign:
       client:
         config:
           myfit-back:
-            url: http://127.0.0.1:80/myfit-back # ну или какой там будет то?
+            url: ${MYFIT_BACK_URL:http://127.0.0.1:80/exercise}
             connectTimeout: 5000
             readTimeout: 5000
             loggerLevel: full

@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 /**
  *  Настройка FeignClient для взаимодействия с myfit-back.
  */
-@FeignClient(name = "myfit-back", contextId = "myFitBackClient") // Указываем только имя и contextId
+@FeignClient(name = "myfit-back")
 public interface MyFitBackClient {
 
   /**
    *  myfit-back POST validate.
    */
-  @PostMapping("/exercise/validateAndSave") // ну или какой он там будет
-  ResponseEntity<ExerciseDto> validateExercise(
+  @PostMapping("/exercise")
+  ResponseEntity<ExerciseDto> saveExercise(
       @RequestBody ExerciseDto exerciseDto,
       @RequestHeader("Authorization") String token);
 }

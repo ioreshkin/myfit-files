@@ -22,9 +22,9 @@ public class ExerciseService {
   /**
    *  отправка запроса на валидацию.
    */
-  public ResponseEntity<ExerciseDto> validateExercise(ExerciseDto exerciseDto, String token) {
+  public ResponseEntity<ExerciseDto> saveExercise(ExerciseDto exerciseDto, String token) {
     try {
-      return myFitBackClient.validateExercise(exerciseDto, "Bearer " + token);
+      return myFitBackClient.saveExercise(exerciseDto, "Bearer " + token);
     } catch (Exception e) {
       throw new ValidationException("ошибка валидации: " + e.getMessage());
     }
@@ -34,13 +34,13 @@ public class ExerciseService {
    *  отправка в очередь Rabbit.
    */
   public void sendToPressAndCat(ExerciseDto exerciseDto) {
-    // Создаем объект ImageTaskDto для отправки в очередь
+
     ImageTaskDto imageTask = new ImageTaskDto(
         exerciseDto.id(),
         new ImageTaskDto.ImageDto(exerciseDto.image().original())
     );
 
-    // Отправляем задачу в очередь RabbitMQ
+
     rabbitTemplate.convertAndSend("files_files_exercise_image", imageTask);
   }
 }

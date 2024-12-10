@@ -1,7 +1,7 @@
 package center.myfit.controller;
 
 
-import center.myfit.service.UploadExerciseService;
+import center.myfit.service.ExerciseFacade;
 import center.myfit.starter.dto.ExerciseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,20 +21,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/files")
 @RequiredArgsConstructor
-public class FileController {
+public class ExerciseController {
 
-  private final UploadExerciseService uploadExerciseService; // Используем новый сервис
+  private final ExerciseFacade exerciseFacade; // Используем новый сервис
 
   /**
    * myfit-files POST /exercise.
    */
-  @PostMapping("/upload")
-  public ResponseEntity<ExerciseDto> uploadFile(@RequestParam("file") MultipartFile file,
+  @PostMapping("/exercise")
+  public ResponseEntity<ExerciseDto> createExercise(@RequestParam("file") MultipartFile file,
                                                 @RequestBody ExerciseDto exerciseDto,
                                                 @RequestHeader("Authorization") String token) {
-    log.info("Принят запрос на сохранение файла");
+    log.info("Запрос на создание упражнения {}", exerciseDto.title());
 
-    // Вызываем метод uploadFile из UploadExerciseService
-    return uploadExerciseService.uploadFile(file, exerciseDto, token);
+    return exerciseFacade.createExercise(file, exerciseDto, token);
   }
 }

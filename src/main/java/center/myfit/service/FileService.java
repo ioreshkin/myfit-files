@@ -9,6 +9,7 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,9 @@ public class FileService {
    */
   public String uploadFile(MultipartFile file) {
     try {
-      String objectName = file.getOriginalFilename();
+      String objectName =
+          UUID.randomUUID().toString() + "-" + file.getOriginalFilename() + "-"
+              + UUID.randomUUID().toString();
       log.info("Загружаем файл: {}", objectName);
 
       minioClient.putObject(
