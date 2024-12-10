@@ -9,11 +9,22 @@ spring:
     oauth2:
       resourceserver:
         jwt.issuer-uri: ${ISSUER_URI:http://localhost:8080/realms/myfit}
+
   datasource:
       driver-class-name: org.postgresql.Driver
       url: ${DB_URL:jdbc:postgresql://localhost:5432/app}
       username: ${DB_USER:app}
       password: ${DB_PASSWORD:pass}
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          myfit-back:
+            url: http://127.0.0.1:80/myfit-back # ну или какой там будет то?
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: full
 
 cors:
     url: ${CORS_URL:http://localhost:3000}
