@@ -12,30 +12,54 @@
     <groupId>center.myfit</groupId>
     <artifactId>myfit-files</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>myfit-files</name>
     <description>myfit-files</description>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/ioreshkin/myfit-common</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 
     <properties>
         <java.version>17</java.version>
-        <keycloak-admin.version>23.0.6</keycloak-admin.version>
+        <feign.version>4.2.0</feign.version>
+        <minio.version>8.5.1</minio.version>
+        <myfit.starter.version>0.4</myfit.starter.version>
+        <rabbitMQ.version>3.2.0</rabbitMQ.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>center.myfit</groupId>
+            <artifactId>myfit-spring-boot-starter</artifactId>
+            <version>${myfit.starter.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>8.5.1</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${feign.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>${rabbitMQ.version}</version>
+        </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
         </dependency>
 
         <!--        database-->
@@ -74,12 +98,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.6.0</version>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
-                    <linkXRef>false</linkXRef>
                 </configuration>
                 <executions>
                     <execution>
@@ -90,6 +113,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.20.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
