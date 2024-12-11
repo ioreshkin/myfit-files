@@ -1,4 +1,4 @@
-name: maven-test
+name: test
 on:
   pull_request:
     branches:
@@ -27,4 +27,4 @@ jobs:
         run: mvn test
         env:
           PACKAGE_USERNAME: ${{ secrets.PACKAGE_USERNAME }}
-          PACKAGE_PASSWORD: ${{ secrets.PACKAGE_TOKEN }}package center.myfit.service;
+          PACKAGE_PASSWORD: ${{ secrets.PACKAGE_TOKEN }}

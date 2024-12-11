@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class MyfitFilesApplication {
 
   /**
-   * main.
+   * Запуск приложения.
    */
   public static void main(String[] args) {
     SpringApplication.run(MyfitFilesApplication.class, args);
