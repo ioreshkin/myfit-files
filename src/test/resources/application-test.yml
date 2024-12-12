@@ -1,0 +1,8 @@
+myfit-back:
+  url: http://localhost:${wiremock.server.port}
+  username: user
+  password: password
+
+logging:
+  level:
+    center.myfit.service.feignclient.MyFitBackClient: DEBUG
