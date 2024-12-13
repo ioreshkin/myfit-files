@@ -3,11 +3,15 @@ package center.myfit.exception;
 import center.myfit.starter.dto.ErrorDto;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 /** Общий обработчик исключений. */
 @Slf4j
@@ -50,6 +54,28 @@ public class CommonExceptionHandler {
     return Objects.isNull(e.getErrorDto())
         ? getErrorDto(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value())
         : e.getErrorDto();
+  }
+
+  /** Обработка ошибки нет дто. */
+  @ExceptionHandler(MissingServletRequestPartException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorDto handleException(MissingServletRequestPartException e) {
+    log.error(e.getMessage(), e);
+    return getErrorDto("Не заполнены обязательные поля формы!", HttpStatus.BAD_REQUEST.value());
+  }
+
+  /** Обработка ошибки валидации дто. */
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorDto handleException(MethodArgumentNotValidException e) {
+    log.error(e.getMessage(), e);
+    String messages =
+        e.getBindingResult().getFieldErrors().stream()
+            .filter(Objects::nonNull)
+            .map(FieldError::getDefaultMessage)
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining(", "));
+    return getErrorDto(messages, HttpStatus.BAD_REQUEST.value());
   }
 
   /** Обработка любых исключений. */

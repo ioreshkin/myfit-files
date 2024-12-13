@@ -152,4 +152,24 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.message", is("Ошибка загрузки файла")));
   }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void createExercise_shouldReturn400_whenNoDtoPresent() throws Exception {
+    when(minioClient.putObject(any())).thenThrow(new IOException());
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultImage).with(POST))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("Не заполнены обязательные поля формы!")));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void createExercise_shouldReturn400_whenNoTitlePresent() throws Exception {
+    when(minioClient.putObject(any())).thenThrow(new IOException());
+    mockMvc
+        .perform(multipart(BASE_URL).file(onlyDescriptionExercisePart).with(POST))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("Заголовок не может быть пустым")));
+  }
 }

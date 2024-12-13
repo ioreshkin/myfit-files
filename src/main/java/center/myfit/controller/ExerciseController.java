@@ -3,6 +3,7 @@ package center.myfit.controller;
 import center.myfit.facade.exercise.ExerciseFacade;
 import center.myfit.mapper.ExerciseMapper;
 import center.myfit.starter.dto.ExerciseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class ExerciseController {
       consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<ExerciseDto> createExercise(
       @RequestPart(value = "file", required = false) MultipartFile file,
-      @RequestPart(value = "dto") ExerciseDto exerciseDto) {
+      @RequestPart(value = "dto") @Valid ExerciseDto exerciseDto) {
     log.info("Запрос на создание упражнения {}", exerciseDto.title());
 
     return exerciseFacade.createExercise(file, exerciseDto);

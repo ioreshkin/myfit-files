@@ -9,6 +9,7 @@ import org.springframework.mock.web.MockMultipartFile;
 public class ResourcePool extends AbstractTestResourcePool {
   public static final MockMultipartFile defaultExercisePart;
   public static final MockMultipartFile defaultImage;
+  public static final MockMultipartFile onlyDescriptionExercisePart;
 
   public static final Resource defaultError =
       new ClassPathResource("json/exercise/default-error.json");
@@ -23,6 +24,8 @@ public class ResourcePool extends AbstractTestResourcePool {
   public static final Resource savedExercise =
       new ClassPathResource("json/exercise/saved-exercise.json");
   public static final Resource image = new ClassPathResource("image/img.png");
+  public static final Resource onlyDescriptionExercise =
+      new ClassPathResource("json/exercise/only-description-exercise.json");
 
   static {
     try {
@@ -32,6 +35,12 @@ public class ResourcePool extends AbstractTestResourcePool {
       defaultExercisePart =
           new MockMultipartFile(
               "dto", "", MediaType.APPLICATION_JSON_VALUE, defaultExercise.getInputStream());
+      onlyDescriptionExercisePart =
+          new MockMultipartFile(
+              "dto",
+              "",
+              MediaType.APPLICATION_JSON_VALUE,
+              onlyDescriptionExercise.getInputStream());
     } catch (Exception e) {
       throw new RuntimeException("Не удалось инициализировать ресурсы!");
     }
