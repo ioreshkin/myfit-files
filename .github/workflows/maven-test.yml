@@ -24,7 +24,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
       - name: test
-        run: mvn test
+        run: mvn verify
         env:
           PACKAGE_USERNAME: ${{ secrets.PACKAGE_USERNAME }}
           PACKAGE_PASSWORD: ${{ secrets.PACKAGE_TOKEN }}

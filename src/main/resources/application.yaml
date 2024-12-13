@@ -10,24 +10,18 @@ spring:
       resourceserver:
         jwt.issuer-uri: ${ISSUER_URI:http://localhost:8080/realms/myfit}
 
-  datasource:
-      driver-class-name: org.postgresql.Driver
-      url: ${DB_URL:jdbc:postgresql://localhost:5432/app}
-      username: ${DB_USER:app}
-      password: ${DB_PASSWORD:pass}
-
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: ${RABBITMQ_DEFAULT_USER:pavel}
-    password: ${RABBITMQ_DEFAULT_PASS:pavel}
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBITMQ_DEFAULT_USER:fit}
+    password: ${RABBITMQ_DEFAULT_PASS:pw}
 
   cloud:
     openfeign:
       client:
         config:
           myfit-back:
-            url: ${MYFIT_BACK_URL:http://127.0.0.1:80/exercise}
+            url: ${myfit-back.url}
             connectTimeout: 5000
             readTimeout: 5000
             loggerLevel: full
@@ -35,11 +29,20 @@ spring:
 cors:
     url: ${CORS_URL:http://localhost:3000}
 
+myfit-back:
+  url: ${MYFIT_BACK_URL:http://127.0.0.1:80/exercise}
+  username: ${MYFIT_BACK_USER:user}
+  password: ${MYFIT_BACK_PASSWORD:password}
 
 minio:
   url: ${MINIO_URL:http://127.0.0.1:9000}
   access-key: ${MINIO_ACCESS_KEY:admin}
   secret-key: ${MINIO_SECRET_KEY:admin123}
-  bucket-name: ${MINIO_BUCKET_NAME:minio1}
+  bucket-name: ${MINIO_BUCKET_NAME:myfit}
+  public-folder: public
+
+queue:
+  exercise:
+    image: files_files_exercise_image
 
 

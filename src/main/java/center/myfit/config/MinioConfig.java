@@ -1,33 +1,22 @@
 package center.myfit.config;
 
 import io.minio.MinioClient;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Конфигурация клиента MinIO.
- */
+/** Конфигурация клиента MinIO. */
 @Configuration
+@RequiredArgsConstructor
 public class MinioConfig {
+  private final MinioProperties config;
 
-  @Value("${minio.url}")
-  private String minioUrl;
-
-  @Value("${minio.access-key}")
-  private String accessKey;
-
-  @Value("${minio.secret-key}")
-  private String secretKey;
-
-  /**
-   * Создание бина minio.
-   */
+  /** Создание бина minioClient. */
   @Bean
   public MinioClient minioClient() {
     return MinioClient.builder()
-        .endpoint(minioUrl)
-        .credentials(accessKey, secretKey)
+        .endpoint(config.getUrl())
+        .credentials(config.getAccessKey(), config.getSecretKey())
         .build();
   }
 }
