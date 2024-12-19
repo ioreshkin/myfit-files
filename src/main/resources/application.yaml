@@ -44,5 +44,17 @@ minio:
 queue:
   exercise:
     image: files_files_exercise_image
+  exercise-save:
+    image: files_back_exercise_image
+
+image-size:
+  exercise:
+    mobile:
+      width: 200
+      height: 300
+    desktop:
+      width: 600
+      height: 900
+
 
 

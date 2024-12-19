@@ -37,7 +37,7 @@ public class ExerciseFacade {
     ResponseEntity<ExerciseDto> response = exerciseService.saveExercise(enrichedDto);
 
     if (Objects.nonNull(file)) {
-      exerciseService.sendImageTask(response.getBody());
+      exerciseService.sendImageTaskToConvert(response.getBody());
     }
 
     return ResponseEntity.ok(response.getBody());

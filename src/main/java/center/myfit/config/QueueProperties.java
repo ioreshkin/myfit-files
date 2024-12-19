@@ -11,10 +11,17 @@ import org.springframework.stereotype.Component;
 public class QueueProperties {
   /** Exercise. */
   private Exercise exercise;
+  private ExerciseSave exerciseSave;
 
   /** Exercise. */
   @Data
   public static class Exercise {
+    private String image;
+  }
+
+  /** ExerciseSave. */
+  @Data
+  public static class ExerciseSave {
     private String image;
   }
 }
