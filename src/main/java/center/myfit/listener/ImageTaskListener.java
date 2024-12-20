@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 /** TaskListener, слушает задачу из  Rabbit files_files_exercise_image. */
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -21,7 +22,7 @@ public class ImageTaskListener {
 
 
   /** конвертация original формата изображения и отправка на сохранение в myfit-back. */
-  @RabbitListener(queues = "#{config.exercise.image}")
+  @RabbitListener(queues = "${queue.exercise.image}")
   public void processImageTask(ImageTaskDto imageTask) {
     log.info("принята задача из очереди {}", config.getExercise().getImage());
     fileFacade.downloadAndConvertFile(imageTask);
