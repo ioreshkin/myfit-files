@@ -1,35 +1,43 @@
 package center.myfit.service.file;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /** Сервис конвертирования файлов. */
 @Slf4j
 @Service
 public class ConvertFileService {
-  /** Конвертация файла по заданным размерам. */
-  public File convertSize(MultipartFile file, int width, int height) throws IOException {
 
-    log.info("старт конвертации файла по формату: {}", width, " x ", height);
+  /**
+   * Конвертация изображения по заданным размерам.
+   *
+   * @param inputStream Входной поток данных.
+   * @param width Ширина.
+   * @param height Высота.
+   * @return InputStream с результатом конвертации.
+   */
+  public InputStream convertSize(InputStream inputStream, int width, int height) {
+    log.info("Старт конвертации изображения по формату: {} x {}", width, height);
 
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-    File tempFile = File.createTempFile("tempImage", ".jpg");
+    try {
+      Thumbnails.of(inputStream)
+          .size(width, height)
+          .outputFormat("jpg")
+          .toOutputStream(outputStream);
 
-    BufferedImage originalImage = Thumbnails.of(file.getInputStream())
-        .size(width, height)
-        .asBufferedImage();
+      log.info("Успешная конвертация изображения");
 
-
-    Thumbnails.of(originalImage)
-        .size(width, height)
-        .toFile(tempFile);
-    log.info("успешная конвертация  файла: {}", file.getName());
-
-    return tempFile; // Возвращаем временный файл
+    } catch (IOException e) {
+      log.error("Ошибка при конвертации изображения: {}", e.getMessage());
+      throw new RuntimeException("Ошибка при конвертации изображения", e);
+    }
+    return new ByteArrayInputStream(outputStream.toByteArray());
   }
 }

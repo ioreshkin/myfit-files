@@ -46,8 +46,6 @@ public class ExerciseService {
 
     ExerciseImageDto exerciseImageDto = exerciseImageMapper
         .toExerciseImageDto(imageTask.exerciseId(), originalUrl, mobileUrl, desktopUrl);
-
-
-    rabbitTemplate.convertAndSend(config.getExerciseSave().getImage(), exerciseImageDto);
+    rabbitTemplate.convertAndSend(config.getExercise().getImageToSave(), exerciseImageDto);
   }
 }

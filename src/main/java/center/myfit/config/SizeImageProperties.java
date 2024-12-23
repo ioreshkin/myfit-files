@@ -7,25 +7,18 @@ import org.springframework.stereotype.Component;
 /** Конфигурация размеров. */
 @Data
 @Component
-@ConfigurationProperties(prefix = "image-size.exercise")
+@ConfigurationProperties(prefix = "image-size")
 public class SizeImageProperties {
 
   /** image-size. */
-  private Mobile mobile;
-  private Desktop desktop;
+  private Size size;
 
-  /** Mobile. */
+  /** Size. */
   @Data
-  public static class Mobile {
-    private int width;
-    private int height;
-
-  }
-
-  /** Desktop.  */
-  @Data
-  public static class Desktop {
-    private int width;
-    private int height;
+  public static class Size {
+    private int mobileWidth;
+    private int mobileHeight;
+    private int desktopWidth;
+    private int desktopHeight;
   }
 }

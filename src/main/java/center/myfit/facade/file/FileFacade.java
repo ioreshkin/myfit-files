@@ -6,13 +6,11 @@ import center.myfit.service.exercise.ExerciseService;
 import center.myfit.service.file.ConvertFileService;
 import center.myfit.service.file.DownloadFileService;
 import center.myfit.service.file.FileService;
-import center.myfit.service.file.utils.FileUtilsHelper;
 import center.myfit.starter.dto.ImageTaskDto;
-import java.io.File;
+import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 /** Фасад для работы с конвертацией изображений. */
 @Slf4j
@@ -27,27 +25,24 @@ public class FileFacade {
   private final SizeImageProperties config;
 
   /**
-   * загрузка из MinIO , конвертивароние файлов и отправка ссылок на сохранение для
+   * Загрузка из MinIO, конвертивароние файлов и отправка ссылок на сохранение для
    * обогащения exerciseImageDto ссылками mobile и desktop.
    */
   public void downloadAndConvertFile(ImageTaskDto imageTask) {
+    String originalUrl = imageTask.image().original();
+    InputStream originalFile = downloadFileService.downloadFile(originalUrl);
 
     try {
-      String originalUrl = imageTask.image().original();
-
-      MultipartFile originalFile = downloadFileService.downloadFile(originalUrl);
-
-      File mobileImageFile = convertFileService.convertSize(originalFile,
-          config.getMobile().getWidth(), config.getMobile().getHeight());
-      File desktopImageFile = convertFileService.convertSize(originalFile,
-          config.getDesktop().getWidth(), config.getDesktop().getHeight());
-
-      MultipartFile mobileImage = FileUtilsHelper.toMultipartFile(mobileImageFile);
-      MultipartFile desktopImage = FileUtilsHelper.toMultipartFile(desktopImageFile);
+      InputStream mobileImageStream = convertFileService.convertSize(originalFile,
+          config.getSize().getMobileWidth(), config.getSize().getMobileHeight());
+      InputStream desktopImageStream = convertFileService.convertSize(originalFile,
+          config.getSize().getDesktopWidth(), config.getSize().getDesktopHeight());
 
 
-      String mobileUrl = fileService.uploadFile(mobileImage, ImageSize.MOBILE);
-      String desktopUrl = fileService.uploadFile(desktopImage, ImageSize.DESKTOP);
+      String mobileUrl = fileService.uploadFile(mobileImageStream, ImageSize.MOBILE,
+          "mobile_image.jpg", mobileImageStream.available(), "image/jpeg");
+      String desktopUrl = fileService.uploadFile(desktopImageStream, ImageSize.DESKTOP,
+          "desktop_image.jpg", desktopImageStream.available(), "image/jpeg");
 
       exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl,
           desktopUrl);
