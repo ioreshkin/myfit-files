@@ -47,11 +47,12 @@ queue:
     imageToSave: files_back_exercise_image
 
 image-size:
-  size:
-    desktop-height: 200
-    desktop-width: 300
-    mobile-height: 600
-    mobile-width: 900
-
+  exercise:
+    mobile:
+      width: 200
+      height: 300
+    desktop:
+      width: 600
+      height: 900
 
 

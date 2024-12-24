@@ -34,9 +34,9 @@ public class FileFacade {
 
     try {
       InputStream mobileImageStream = convertFileService.convertSize(originalFile,
-          config.getSize().getMobileWidth(), config.getSize().getMobileHeight());
+          config.getMobile().getWidth(), config.getMobile().getHeight());
       InputStream desktopImageStream = convertFileService.convertSize(originalFile,
-          config.getSize().getDesktopWidth(), config.getSize().getDesktopHeight());
+          config.getDesktop().getWidth(), config.getDesktop().getHeight());
 
 
       String mobileUrl = fileService.uploadFile(mobileImageStream, ImageSize.MOBILE,

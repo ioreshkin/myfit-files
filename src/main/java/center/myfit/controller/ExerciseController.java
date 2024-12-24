@@ -1,12 +1,10 @@
 package center.myfit.controller;
 
 import center.myfit.facade.exercise.ExerciseFacade;
-import center.myfit.facade.file.ulils.FileUtils;
 import center.myfit.mapper.ExerciseMapper;
 import center.myfit.starter.dto.ExerciseDto;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -37,15 +35,11 @@ public class ExerciseController {
       @RequestPart(value = "file", required = false) MultipartFile file,
       @RequestPart(value = "dto") @Valid ExerciseDto exerciseDto) {
     log.info("Запрос на создание упражнения {}", exerciseDto.title());
-
-    InputStream fileInputStream = null;
     try {
-      fileInputStream = FileUtils.getInputStream(file);
+      return exerciseFacade.createExercise(
+          file != null ? file.getInputStream() : null, exerciseDto);
     } catch (IOException e) {
-      log.error("Ошибка при получении потока из MultipartFile", e);
-      throw new RuntimeException("Ошибка при получении потока из MultipartFile", e);
+      throw new RuntimeException("Ошибка при обработке загружаемого файла", e);
     }
-
-    return exerciseFacade.createExercise(fileInputStream, exerciseDto);
   }
 }
