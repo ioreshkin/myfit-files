@@ -15,6 +15,9 @@ public class QueueProperties {
   /** Exercise. */
   @Data
   public static class Exercise {
-    private String image;
+    private String imageToConvert;
+    private String imageToSave;
   }
 }
+
+

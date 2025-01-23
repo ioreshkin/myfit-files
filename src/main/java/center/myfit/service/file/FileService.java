@@ -8,12 +8,14 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import jakarta.annotation.PostConstruct;
+import java.io.InputStream;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
+import org.apache.commons.compress.utils.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /** Сервис сохранения в MinIO. */
 @Slf4j
@@ -50,29 +52,36 @@ public class FileService {
     }
   }
 
-  /** загрузка в MinIO. */
-  public String uploadFile(MultipartFile file, ImageSize imageSize) {
-    String objectName =
-        String.format(
-            "%s/%s.%s.%s",
-            config.getPublicFolder(),
-            UUID.randomUUID(),
-            imageSize.getPostfix(),
-            FileNameUtils.getExtension(file.getOriginalFilename()));
+  /** Загрузка в MinIO. */
+  public String uploadFile(InputStream inputStream, ImageSize imageSize, String fileName,
+                           MediaType mediaType) {
+    String objectName = String.format(
+        "%s/%s.%s.%s",
+        config.getPublicFolder(),
+        UUID.randomUUID(),
+        imageSize.getPostfix(),
+        FileNameUtils.getExtension(fileName));
+
     try {
       log.info("Загружаем файл: {}", objectName);
 
+      // Загрузка файла в MinIO
       minioClient.putObject(
-          PutObjectArgs.builder().bucket(config.getBucketName()).object(objectName).stream(
-                  file.getInputStream(), file.getSize(), -1)
-              .contentType(file.getContentType())
-              .build());
+          PutObjectArgs.builder()
+              .bucket(config.getBucketName())
+              .object(objectName)
+              .stream(inputStream, inputStream.available(), -1)
+              .contentType(mediaType.toString()) //проверить дебаг
+              .build()
+      );
 
-      log.info("Файл загружен");
+      log.info("Файл загружен: {}", objectName);
       return objectName;
 
     } catch (Exception e) {
       throw new UploadException("Ошибка загрузки файла", e);
+    } finally {
+      IOUtils.closeQuietly(inputStream);
     }
   }
 }

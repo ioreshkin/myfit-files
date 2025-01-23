@@ -1,3 +1,5 @@
+stage: stage
+
 myfit-back:
   url: http://localhost:${wiremock.server.port}
   username: user

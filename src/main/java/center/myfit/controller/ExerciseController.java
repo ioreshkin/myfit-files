@@ -4,6 +4,7 @@ import center.myfit.facade.exercise.ExerciseFacade;
 import center.myfit.mapper.ExerciseMapper;
 import center.myfit.starter.dto.ExerciseDto;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -34,7 +35,11 @@ public class ExerciseController {
       @RequestPart(value = "file", required = false) MultipartFile file,
       @RequestPart(value = "dto") @Valid ExerciseDto exerciseDto) {
     log.info("Запрос на создание упражнения {}", exerciseDto.title());
-
-    return exerciseFacade.createExercise(file, exerciseDto);
+    try {
+      return exerciseFacade.createExercise(
+          file != null ? file.getInputStream() : null, exerciseDto);
+    } catch (IOException e) {
+      throw new RuntimeException("Ошибка при обработке загружаемого файла", e);
+    }
   }
 }

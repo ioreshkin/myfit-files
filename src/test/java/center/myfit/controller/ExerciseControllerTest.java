@@ -30,6 +30,7 @@ import java.io.IOException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -44,10 +45,13 @@ class ExerciseControllerTest extends BaseIntegrationTest {
       new ImageTaskDto(1L, new ImageTaskDto.ImageDto("public/123.jpg"));
   private static final String BASE_URL = "/exercise";
 
+  @Value("${stage}")
+  private String stage;
+
   @Autowired MyFitBackProperties config;
   @Autowired QueueProperties queueConfig;
 
-  public ExerciseControllerTest(WebApplicationContext context) {
+  ExerciseControllerTest(WebApplicationContext context) {
     super(context);
   }
 
@@ -58,7 +62,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(queueConfig.getExercise().getImage()), eq(TASK_DTO));
+        .convertAndSend(eq(stage), eq(stage+
+            queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
         WireMock.post(urlEqualTo(BASE_URL))
@@ -83,7 +88,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.videoUrl", is("https://you.tube/abc")))
         .andExpect(jsonPath("$.image.original", is("public/123.jpg")));
 
-    verify(rabbitTemplate, times(1)).convertAndSend(queueConfig.getExercise().getImage(), TASK_DTO);
+    verify(rabbitTemplate, times(1)).convertAndSend(stage, stage+
+            queueConfig.getExercise().getImageToConvert(), TASK_DTO);
   }
 
   @Test
@@ -93,7 +99,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(queueConfig.getExercise().getImage()), eq(TASK_DTO));
+        .convertAndSend(eq(stage), eq(stage+
+        queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
         WireMock.post(urlEqualTo(BASE_URL))
@@ -116,7 +123,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.image", Matchers.nullValue()));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(queueConfig.getExercise().getImage()), eq(TASK_DTO));
+        .convertAndSend(eq(stage), eq(stage+
+            queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
   }
 
   @Test
@@ -126,7 +134,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(queueConfig.getExercise().getImage()), eq(TASK_DTO));
+        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+            eq(TASK_DTO));
 
     stubFor(
         WireMock.post(urlEqualTo(BASE_URL))
@@ -140,7 +149,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.message", is("error message")));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(queueConfig.getExercise().getImage()), eq(TASK_DTO));
+        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+            eq(TASK_DTO));
   }
 
   @Test
