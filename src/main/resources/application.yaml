@@ -43,7 +43,7 @@ minio:
 
 queue:
   exercise:
-    image: files_files_exercise_image
+    imageToConvert: files_files_exercise_image
     imageToSave: files_back_exercise_image
 
 image-size:
@@ -54,5 +54,7 @@ image-size:
     desktop:
       width: 600
       height: 900
+
+stage: ${STAGE_NAME}
 
 

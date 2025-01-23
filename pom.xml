@@ -217,7 +217,6 @@
                                 <rule>
                                     <element>BUNDLE</element>
                                     <limits>
-<!--                                        тесты напишу и поставлю обратоно 0,9; 0,8; 0,9; 0,9 -->
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>

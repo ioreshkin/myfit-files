@@ -21,10 +21,10 @@ public class ImageTaskListener {
 
 
   /** конвертация original формата изображения и отправка на сохранение в myfit-back. */
-  @RabbitListener(queues = "${queue.exercise.image}")
+  @RabbitListener(queues = "${queue.exercise.imageToConvert}")
   public void convertImage(ImageTaskDto imageTask) {
     log.info("принята задача из очереди {} , на конвертацию изображения с exerciseId: {}",
-        config.getExercise().getImage(), imageTask.exerciseId());
+        config.getExercise().getImageToConvert(), imageTask.exerciseId());
     fileFacade.downloadAndConvertFile(imageTask);
   }
 }

@@ -53,9 +53,6 @@ public class FileFacade {
 
         exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl,
             desktopUrl);
-        // public void convertAndSend(String exchange, String routingKey, Object object)
-        // throws AmqpException {
-        //    this.convertAndSend(exchange, routingKey, object, (CorrelationData)null);
       }
     } catch (IOException e) {
       log.error("ошибка при создании массива байт: {}", e.getMessage());

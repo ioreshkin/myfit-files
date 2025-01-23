@@ -10,6 +10,7 @@ import center.myfit.starter.dto.ImageTaskDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ExerciseService {
 
+  @Value("${stage}")
+  private String stage;
   private final MyFitBackClient myFitBackClient;
   private final RabbitTemplate rabbitTemplate;
   private final ImageTaskMapper mapper;
@@ -36,7 +39,8 @@ public class ExerciseService {
 
     ImageTaskDto imageTask = mapper.toImageTask(exerciseDto);
 
-    rabbitTemplate.convertAndSend(config.getExercise().getImage(), imageTask);
+    rabbitTemplate.convertAndSend(stage,
+        stage + config.getExercise().getImageToConvert(), imageTask);
   }
 
   /** Отправка в очередь myfit-back на сохранение. */
@@ -46,6 +50,8 @@ public class ExerciseService {
 
     ExerciseImageDto exerciseImageDto = exerciseImageMapper
         .toExerciseImageDto(imageTask.exerciseId(), originalUrl, mobileUrl, desktopUrl);
-    rabbitTemplate.convertAndSend(config.getExercise().getImageToSave(), exerciseImageDto);
+
+    rabbitTemplate.convertAndSend(stage, stage + config.getExercise().getImageToSave(),
+        exerciseImageDto);
   }
 }

@@ -10,6 +10,7 @@ import center.myfit.starter.dto.ImageTaskDto;
 import io.minio.GetObjectResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.WebApplicationContext;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -17,7 +18,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -28,11 +28,11 @@ import static org.mockito.Mockito.when;
 
 class ImageTaskListenerTest extends BaseIntegrationTest {
 
-  @Autowired
-  QueueProperties queueConfig;
+  @Value("${stage}")
+  private String stage;
 
-  @Autowired
-  ImageTaskListener imageTaskListener;
+  @Autowired QueueProperties queueConfig;
+  @Autowired ImageTaskListener imageTaskListener;
 
 
   // это тоже в пул ресурсов?
@@ -43,8 +43,7 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
     new ExerciseImageDto(1L, new ExerciseImageDto.ImageDto("original.jpg",
         "mobile.jpg", "desctop.jpg"));
 
-
-  protected ImageTaskListenerTest(WebApplicationContext context) {
+  ImageTaskListenerTest(WebApplicationContext context) {
     super(context);
   }
 
@@ -54,9 +53,10 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
 
     assertThrows(DownloadException.class, () -> {
       imageTaskListener.convertImage(TASK_DTO);
-
       });
-    verify(rabbitTemplate, never()).convertAndSend(anyString(), any(ImageTaskDto.class));;
+
+    verify(rabbitTemplate, never()).convertAndSend(eq(stage),
+        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));;
   }
 
   @Test
@@ -72,7 +72,8 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
       imageTaskListener.convertImage(TASK_DTO);
     });
 
-    verify(rabbitTemplate, never()).convertAndSend(anyString(), any(ImageTaskDto.class));;
+    verify(rabbitTemplate, never()).convertAndSend(eq(stage),
+        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
 
   }
 
@@ -89,7 +90,8 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
       imageTaskListener.convertImage(TASK_DTO);
     });
 
-    verify(rabbitTemplate, never()).convertAndSend(anyString(), any(ImageTaskDto.class));;
+    verify(rabbitTemplate, never()).convertAndSend(eq(stage),
+        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
 
   }
 
@@ -103,12 +105,13 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
 
   doNothing()
       .when(rabbitTemplate)
-      .convertAndSend(eq(queueConfig.getExercise().getImageToSave()), eq(EXERCISE_IMAGE_DTO));
+      .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToSave()),
+      eq(EXERCISE_IMAGE_DTO));
 
       imageTaskListener.convertImage(TASK_DTO);
 
     verify(rabbitTemplate, times(1))
-        .convertAndSend(eq(queueConfig.getExercise().getImageToSave()),
+        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToSave()),
             any(ExerciseImageDto.class));
   }
 }
