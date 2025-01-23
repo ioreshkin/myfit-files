@@ -6,10 +6,10 @@ import center.myfit.service.exercise.ExerciseService;
 import center.myfit.service.file.FileService;
 import center.myfit.service.user.UserAwareImpl;
 import center.myfit.starter.dto.ExerciseDto;
-import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +31,9 @@ public class ExerciseFacade {
     ExerciseDto enrichedDto = mapper.enrichKeycloakId(exerciseDto, userAware.getKeycloakId());
 
     if (fileInputStream != null) {
-      String path = null;
-      try {
-        int fileSize = fileInputStream.available();
-
-        path = fileService.uploadFile(fileInputStream, ImageSize.ORIGINAL, "uploaded_image.jpg",
-            fileSize, "image/jpeg");
-
-      } catch (IOException e) {
-        log.error("Ошибка при получении размера файла с помощью available()", e);
-        throw new RuntimeException("Ошибка при получении размера файла", e);
-      }
+      String path = fileService
+          .uploadFile(fileInputStream, ImageSize.ORIGINAL, "uploaded_image.jpg",
+          MediaType.IMAGE_JPEG);
 
       enrichedDto = mapper.enrichOriginal(enrichedDto, path);
     }

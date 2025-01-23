@@ -1,7 +1,7 @@
 package center.myfit.service.file;
 
 import center.myfit.config.MinioProperties;
-import center.myfit.exception.UploadException;
+import center.myfit.exception.DownloadException;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class DownloadFileService {
               .build()
       );
     } catch (Exception e) {
-      throw new UploadException("Ошибка загрузки файла из MinIO", e);
+      throw new DownloadException("Ошибка загрузки файла из MinIO", e);
     }
   }
 }

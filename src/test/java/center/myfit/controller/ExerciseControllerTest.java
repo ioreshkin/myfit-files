@@ -53,7 +53,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
   @Test
   @WithMockUser(keycloakId = KEYCLOAK_ID)
-  void createExercise_shouldReturnEnrichedDtoWithOriginalLink() throws Exception {
+  void    createExercise_shouldReturnEnrichedDtoWithOriginalLink() throws Exception {
     when(minioClient.putObject(any())).thenReturn(null);
 
     doNothing()

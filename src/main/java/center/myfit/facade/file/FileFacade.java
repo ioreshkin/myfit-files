@@ -2,14 +2,19 @@ package center.myfit.facade.file;
 
 import center.myfit.config.SizeImageProperties;
 import center.myfit.enums.ImageSize;
+import center.myfit.exception.DownloadException;
 import center.myfit.service.exercise.ExerciseService;
 import center.myfit.service.file.ConvertFileService;
 import center.myfit.service.file.DownloadFileService;
 import center.myfit.service.file.FileService;
 import center.myfit.starter.dto.ImageTaskDto;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 /** Фасад для работы с конвертацией изображений. */
@@ -30,26 +35,32 @@ public class FileFacade {
    */
   public void downloadAndConvertFile(ImageTaskDto imageTask) {
     String originalUrl = imageTask.image().original();
-    InputStream originalFile = downloadFileService.downloadFile(originalUrl);
 
+    byte[] originalImageStream = null;
     try {
-      InputStream mobileImageStream = convertFileService.convertSize(originalFile,
-          config.getMobile().getWidth(), config.getMobile().getHeight());
-      InputStream desktopImageStream = convertFileService.convertSize(originalFile,
-          config.getDesktop().getWidth(), config.getDesktop().getHeight());
+      originalImageStream = IOUtils.toByteArray(downloadFileService.downloadFile(originalUrl));
+      try (InputStream mobileImageStream =
+              convertFileService.convertSize(new ByteArrayInputStream(originalImageStream),
+                  config.getMobile().getWidth(), config.getMobile().getHeight());
+          InputStream desktopImageStream = convertFileService
+              .convertSize(new ByteArrayInputStream(originalImageStream),
+              config.getDesktop().getWidth(), config.getDesktop().getHeight());) {
 
+        String mobileUrl = fileService.uploadFile(mobileImageStream, ImageSize.MOBILE,
+            "mobile_image.jpg", MediaType.IMAGE_JPEG);
+        String desktopUrl = fileService.uploadFile(desktopImageStream, ImageSize.DESKTOP,
+            "desktop_image.jpg", MediaType.IMAGE_JPEG);
 
-      String mobileUrl = fileService.uploadFile(mobileImageStream, ImageSize.MOBILE,
-          "mobile_image.jpg", mobileImageStream.available(), "image/jpeg");
-      String desktopUrl = fileService.uploadFile(desktopImageStream, ImageSize.DESKTOP,
-          "desktop_image.jpg", desktopImageStream.available(), "image/jpeg");
-
-      exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl,
-          desktopUrl);
-
-    } catch (Exception e) {
-
-      throw new RuntimeException("Ошибка при обработке задачи изображения: " + e.getMessage(), e);
+        exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl,
+            desktopUrl);
+        // public void convertAndSend(String exchange, String routingKey, Object object)
+        // throws AmqpException {
+        //    this.convertAndSend(exchange, routingKey, object, (CorrelationData)null);
+      }
+    } catch (IOException e) {
+      log.error("ошибка при создании массива байт: {}", e.getMessage());
+      throw new DownloadException("ошибка при создании массива байт");
     }
   }
 }
+

@@ -1,6 +1,5 @@
 package center.myfit.listener;
 
-
 import center.myfit.config.QueueProperties;
 import center.myfit.facade.file.FileFacade;
 import center.myfit.starter.dto.ImageTaskDto;
@@ -23,11 +22,10 @@ public class ImageTaskListener {
 
   /** конвертация original формата изображения и отправка на сохранение в myfit-back. */
   @RabbitListener(queues = "${queue.exercise.image}")
-  public void processImageTask(ImageTaskDto imageTask) {
+  public void convertImage(ImageTaskDto imageTask) {
     log.info("принята задача из очереди {} , на конвертацию изображения с exerciseId: {}",
         config.getExercise().getImage(), imageTask.exerciseId());
     fileFacade.downloadAndConvertFile(imageTask);
-
   }
 }
 

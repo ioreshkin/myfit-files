@@ -13,6 +13,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
+import org.apache.commons.compress.utils.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 /** Сервис сохранения в MinIO. */
@@ -52,7 +54,7 @@ public class FileService {
 
   /** Загрузка в MinIO. */
   public String uploadFile(InputStream inputStream, ImageSize imageSize, String fileName,
-                           long fileSize, String contentType) {
+                           MediaType mediaType) {
     String objectName = String.format(
         "%s/%s.%s.%s",
         config.getPublicFolder(),
@@ -68,8 +70,8 @@ public class FileService {
           PutObjectArgs.builder()
               .bucket(config.getBucketName())
               .object(objectName)
-              .stream(inputStream, fileSize, -1)
-              .contentType(contentType)
+              .stream(inputStream, inputStream.available(), -1)
+              .contentType(mediaType.toString()) //проверить дебаг
               .build()
       );
 
@@ -78,11 +80,8 @@ public class FileService {
 
     } catch (Exception e) {
       throw new UploadException("Ошибка загрузки файла", e);
+    } finally {
+      IOUtils.closeQuietly(inputStream);
     }
   }
-
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package center.myfit.service.file;
 
+import center.myfit.exception.ConvertException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ConvertFileService {
 
     } catch (IOException e) {
       log.error("Ошибка при конвертации изображения: {}", e.getMessage());
-      throw new RuntimeException("Ошибка при конвертации изображения", e);
+      throw new ConvertException("Ошибка при конвертации изображения", e);
     }
     return new ByteArrayInputStream(outputStream.toByteArray());
   }
