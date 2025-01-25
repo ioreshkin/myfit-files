@@ -37,6 +37,8 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <wiremock.version>4.1.2</wiremock.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
+        <swagger-annotations.version>2.2.27</swagger-annotations.version>
+        <openapi-ui.version>1.7.0</openapi-ui.version>
         <!--     plugins     -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
@@ -76,12 +78,33 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-ui</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-data-rest</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <!-- convertor -->
+        <!--    convertor    -->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
+        </dependency>
+        <!--    swagger     -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${openapi-ui.version}</version>
         </dependency>
         <!--       util       -->
         <dependency>

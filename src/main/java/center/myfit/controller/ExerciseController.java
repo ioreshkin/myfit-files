@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 /** Контроллер для загрузки изображения. */
 @Slf4j
 @RestController
-@RequestMapping("/")
+@RequestMapping("${api-prefix}")
 @RequiredArgsConstructor
 @Validated
 public class ExerciseController {

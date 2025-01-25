@@ -1,9 +1,20 @@
 server:
   port: 8082
 
+api-prefix: api/files
+stage: ${STAGE_NAME}
+
 spring:
   application:
     name: myfit-files
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: ${api-prefix}/swagger-ui
+    enabled: ${SWAGGER_ENABLE:true}
+  api-docs:
+    enabled: ${SWAGGER_ENABLE:true}
 
   security:
     oauth2:
@@ -36,8 +47,8 @@ myfit-back:
 
 minio:
   url: ${MINIO_URL:http://127.0.0.1:9000}
-  access-key: ${MINIO_ACCESS_KEY:admin}
-  secret-key: ${MINIO_SECRET_KEY:admin123}
+  access-key: ${MINIO_ACCESS_KEY:fit}
+  secret-key: ${MINIO_SECRET_KEY:miniopassword}
   bucket-name: ${MINIO_BUCKET_NAME:myfit}
   public-folder: public
 
@@ -54,7 +65,3 @@ image-size:
     desktop:
       width: 600
       height: 900
-
-stage: ${STAGE_NAME}
-
-
