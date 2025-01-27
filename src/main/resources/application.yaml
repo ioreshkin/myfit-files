@@ -2,19 +2,11 @@ server:
   port: 8082
 
 api-prefix: api/files
-stage: ${STAGE_NAME}
+stage: ${STAGE_NAME:stage}
 
 spring:
   application:
     name: myfit-files
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    path: ${api-prefix}/swagger-ui
-    enabled: ${SWAGGER_ENABLE:true}
-  api-docs:
-    enabled: ${SWAGGER_ENABLE:true}
 
   security:
     oauth2:
@@ -37,11 +29,19 @@ springdoc:
             readTimeout: 5000
             loggerLevel: full
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: ${api-prefix}/swagger-ui
+    enabled: ${SWAGGER_ENABLE:true}
+  api-docs:
+    enabled: ${SWAGGER_ENABLE:true}
+
 cors:
     url: ${CORS_URL:http://localhost:3000}
 
 myfit-back:
-  url: ${MYFIT_BACK_URL:http://127.0.0.1:80/exercise}
+  url: ${MYFIT_BACK_URL:http://127.0.0.1:80}
   username: ${MYFIT_BACK_USER:user}
   password: ${MYFIT_BACK_PASSWORD:password}
 
@@ -49,8 +49,9 @@ minio:
   url: ${MINIO_URL:http://127.0.0.1:9000}
   access-key: ${MINIO_ACCESS_KEY:fit}
   secret-key: ${MINIO_SECRET_KEY:miniopassword}
-  bucket-name: ${MINIO_BUCKET_NAME:myfit}
+  bucket-name: ${MINIO_BUCKET_NAME:fitcycle}
   public-folder: public
+
 
 queue:
   exercise:
@@ -65,3 +66,17 @@ image-size:
     desktop:
       width: 600
       height: 900
+
+tuz:
+  username: ${TUZ_USER:tuz}
+  password: ${TUZ_PASSWORD:password}
+
+## наколько я понял, настройки кейклока этотму сервиму не нужны ,
+#ему хватает jwt.issuer-uri: ${ISSUER_URI:
+#    # чтобы сходить за ключом
+#  keycloak:
+#  url: ${KEYCLOAK_URL:http://localhost:8080}
+#  realm: ${KEYCLOAK_REALM:master}
+#  username: ${KEYCLOAK_USERNAME:admin}
+#  password: ${KEYCLOAK_PASSWORD:pw}
+#  client-id: ${KEYCLOAK_CLIENT_ID:admin-cli}

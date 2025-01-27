@@ -21,7 +21,7 @@ public class ImageTaskListener {
 
 
   /** конвертация original формата изображения и отправка на сохранение в myfit-back. */
-  @RabbitListener(queues = "${queue.exercise.imageToConvert}")
+  @RabbitListener(queues = "${stage}" + "_files_files_exercise_image_q")
   public void convertImage(ImageTaskDto imageTask) {
     log.info("принята задача из очереди {} , на конвертацию изображения с exerciseId: {}",
         config.getExercise().getImageToConvert(), imageTask.exerciseId());

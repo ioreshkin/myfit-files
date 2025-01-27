@@ -62,7 +62,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
             queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
@@ -88,7 +88,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.videoUrl", is("https://you.tube/abc")))
         .andExpect(jsonPath("$.image.original", is("public/123.jpg")));
 
-    verify(rabbitTemplate, times(1)).convertAndSend(stage, stage+
+    verify(rabbitTemplate, times(1)).convertAndSend(stage, stage+ "_" +
             queueConfig.getExercise().getImageToConvert(), TASK_DTO);
   }
 
@@ -99,7 +99,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
         queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
@@ -123,7 +123,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.image", Matchers.nullValue()));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
             queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
   }
 
@@ -134,7 +134,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+        .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
             eq(TASK_DTO));
 
     stubFor(
@@ -149,7 +149,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.message", is("error message")));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+        .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
             eq(TASK_DTO));
   }
 

@@ -56,7 +56,7 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
       });
 
     verify(rabbitTemplate, never()).convertAndSend(eq(stage),
-        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));;
+        eq(stage + "_" + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));;
   }
 
   @Test
@@ -73,7 +73,7 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
     });
 
     verify(rabbitTemplate, never()).convertAndSend(eq(stage),
-        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
+        eq(stage + "_" + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
 
   }
 
@@ -91,7 +91,7 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
     });
 
     verify(rabbitTemplate, never()).convertAndSend(eq(stage),
-        eq(stage + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
+        eq(stage + "_" + queueConfig.getExercise().getImageToSave()),  eq(TASK_DTO));
 
   }
 
@@ -105,13 +105,13 @@ class ImageTaskListenerTest extends BaseIntegrationTest {
 
   doNothing()
       .when(rabbitTemplate)
-      .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToSave()),
+      .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToSave()),
       eq(EXERCISE_IMAGE_DTO));
 
       imageTaskListener.convertImage(TASK_DTO);
 
     verify(rabbitTemplate, times(1))
-        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToSave()),
+        .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToSave()),
             any(ExerciseImageDto.class));
   }
 }

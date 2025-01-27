@@ -1,7 +1,7 @@
 package center.myfit.config;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitConfig {
 
-  /** Создание бина RabbitTemplate. */
+  /**  Создание Jackson2JsonMessageConverter. */
   @Bean
-  public RabbitTemplate rabbitTemplate() {
-    return new RabbitTemplate();
+  public Jackson2JsonMessageConverter converter() {
+    return new Jackson2JsonMessageConverter();
   }
 }

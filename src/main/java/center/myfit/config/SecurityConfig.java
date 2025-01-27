@@ -1,36 +1,32 @@
 package center.myfit.config;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-
-/** Конфигурация basic authentication.  */
+/** Настройки безопасности приложения. */
 @Configuration
-@EnableWebSecurity
+@Slf4j
+@EnableMethodSecurity(jsr250Enabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
+  private final TuzProperties properties;
 
-  /** Создание бина SecurityFilterChain. */
+  /** Создание UserDetailsService с существующими пользователями. */
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-            .anyRequest().permitAll() // Разрешаем доступ ко всем остальным запросам без проверки
-        //сделал пока так потому что тут еще можно задать как проверяются запросы в общении
-        // между сервисами, а у нас кейклоак и мне не ясно как он до конца реализован
-        // например можно так .anyRequest().authenticated()
-        //  Все остальные запросы требуют аутентификации
-        //  ).oauth2ResourceServer(oauth2 -> oauth2.jwt()); // Используем JWT для аутентификации
-        // или
-        // .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
-        // .httpBasic(); // Включаем Basic Authentication
-        );
-
-    return http.build();
+  public UserDetailsService userDetailsService() {
+    UserDetails technoUser =
+        User.withDefaultPasswordEncoder()
+            .username(properties.getUsername())
+            .password(properties.getPassword())
+            .roles("TUZ")
+            .build();
+    return new InMemoryUserDetailsManager(technoUser);
   }
 }
-
