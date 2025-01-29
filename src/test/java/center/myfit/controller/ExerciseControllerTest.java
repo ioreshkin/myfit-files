@@ -43,7 +43,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
       };
   public static final ImageTaskDto TASK_DTO =
       new ImageTaskDto(1L, new ImageTaskDto.ImageDto("public/123.jpg"));
-  private static final String BASE_URL = "/exercise";
+  private static final String BASE_URL = "/api/files/exercise";
+  private static final String BASE_URLBACK = "/api/back/exercise";
 
   @Value("${stage}")
   private String stage;
@@ -66,7 +67,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
             queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(
                 matchingJsonPath(
@@ -103,7 +104,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
             .willReturn(
@@ -138,7 +139,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
             eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
             .willReturn(aResponse().withStatus(400).withBody(getString(defaultError))));

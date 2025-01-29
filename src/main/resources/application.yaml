@@ -1,7 +1,7 @@
 server:
   port: 8082
 
-api-prefix: api/files
+api-prefix: /api/files
 stage: ${STAGE_NAME:stage}
 
 spring:
@@ -70,13 +70,3 @@ image-size:
 tuz:
   username: ${TUZ_USER:tuz}
   password: ${TUZ_PASSWORD:password}
-
-## наколько я понял, настройки кейклока этотму сервиму не нужны ,
-#ему хватает jwt.issuer-uri: ${ISSUER_URI:
-#    # чтобы сходить за ключом
-#  keycloak:
-#  url: ${KEYCLOAK_URL:http://localhost:8080}
-#  realm: ${KEYCLOAK_REALM:master}
-#  username: ${KEYCLOAK_USERNAME:admin}
-#  password: ${KEYCLOAK_PASSWORD:pw}
-#  client-id: ${KEYCLOAK_CLIENT_ID:admin-cli}
