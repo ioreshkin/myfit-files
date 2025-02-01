@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: docker push
-        run: docker push nexus.fitcycle.online/myfit:${{ steps.version-extractor.outputs.version }}
+        run: docker push nexus.fitcycle.online/myfit-files:${{ steps.version-extractor.outputs.version }}
       - uses: tale/kubectl-action@v1
         with:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
