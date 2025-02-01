@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /** Настройка FeignClient для взаимодействия с myfit-back. */
-@FeignClient(name = "myfit-back")
+@FeignClient(name = "myfit-back", url = "${myfit-back.url}")
 public interface MyFitBackClient {
 
   /** Сохранение упражнения. */

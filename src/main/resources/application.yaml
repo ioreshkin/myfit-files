@@ -1,6 +1,9 @@
 server:
   port: 8082
 
+api-prefix: /api/files
+stage: ${STAGE_NAME:stage}
+
 spring:
   application:
     name: myfit-files
@@ -26,20 +29,29 @@ spring:
             readTimeout: 5000
             loggerLevel: full
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: ${api-prefix}/swagger-ui
+    enabled: ${SWAGGER_ENABLE:true}
+  api-docs:
+    enabled: ${SWAGGER_ENABLE:true}
+
 cors:
     url: ${CORS_URL:http://localhost:3000}
 
 myfit-back:
-  url: ${MYFIT_BACK_URL:http://127.0.0.1:80/exercise}
+  url: ${MYFIT_BACK_URL:http://127.0.0.1:80}
   username: ${MYFIT_BACK_USER:user}
   password: ${MYFIT_BACK_PASSWORD:password}
 
 minio:
   url: ${MINIO_URL:http://127.0.0.1:9000}
-  access-key: ${MINIO_ACCESS_KEY:admin}
-  secret-key: ${MINIO_SECRET_KEY:admin123}
-  bucket-name: ${MINIO_BUCKET_NAME:myfit}
+  access-key: ${MINIO_ACCESS_KEY:fit}
+  secret-key: ${MINIO_SECRET_KEY:miniopassword}
+  bucket-name: ${MINIO_BUCKET_NAME:fitcycle}
   public-folder: public
+
 
 queue:
   exercise:
@@ -55,6 +67,6 @@ image-size:
       width: 600
       height: 900
 
-stage: ${STAGE_NAME}
-
-
+tuz:
+  username: ${TUZ_USER:tuz}
+  password: ${TUZ_PASSWORD:password}

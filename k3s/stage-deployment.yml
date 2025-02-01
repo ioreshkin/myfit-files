@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stage-myfit-files
+  namespace: stage
+  labels:
+    app: stage-myfit-files
+spec:
+  replicas: 1
+  strategy:
+    type: "Recreate"
+  selector:
+    matchLabels:
+      app: stage-myfit-files
+  template:
+    metadata:
+      labels:
+        app: stage-myfit-files
+    spec:
+      containers:
+        - name: stage-myfit-files
+          image: "nexus.fitcycle.online/myfit-files:0.1-SNAPSHOT"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8082
+              protocol: TCP
+          env:
+            - name: ISSUER_URI
+              value: "https://auth.fitcycle.ru/realms/fitcycle-stage"
+            - name: RABBIT_HOST
+              value: "rabbit-0.rabbit.rabbit.svc.cluster.local"
+            - name: STAGE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: stage.name
+            - name: RABBIT_PORT
+              value: "5672"
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: rabbit.user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: rabbit.password
+            - name: SWAGGER_ENABLE
+              value: "true"
+            - name: CORS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: cors.url
+            - name:  MYFIT_BACK_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: myfit.back.url
+            - name: MYFIT_BACK_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: myfit.back.user
+            - name: MYFIT_BACK_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: myfit.back.password
+            - name: MINIO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: minio.url
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: minio.access.key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: minio.secret.key
+            - name: MINIO_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: minio.bucket.name
+            - name: TUZ_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: tuz.user
+            - name: TUZ_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: stage-myfit-files
+                  key: tuz.password

@@ -43,7 +43,8 @@ class ExerciseControllerTest extends BaseIntegrationTest {
       };
   public static final ImageTaskDto TASK_DTO =
       new ImageTaskDto(1L, new ImageTaskDto.ImageDto("public/123.jpg"));
-  private static final String BASE_URL = "/exercise";
+  private static final String BASE_URL = "/api/files/exercise";
+  private static final String BASE_URLBACK = "/api/back/exercise";
 
   @Value("${stage}")
   private String stage;
@@ -62,11 +63,11 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
             queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(
                 matchingJsonPath(
@@ -88,7 +89,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.videoUrl", is("https://you.tube/abc")))
         .andExpect(jsonPath("$.image.original", is("public/123.jpg")));
 
-    verify(rabbitTemplate, times(1)).convertAndSend(stage, stage+
+    verify(rabbitTemplate, times(1)).convertAndSend(stage, stage+ "_" +
             queueConfig.getExercise().getImageToConvert(), TASK_DTO);
   }
 
@@ -99,11 +100,11 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
         queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
             .willReturn(
@@ -123,7 +124,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.image", Matchers.nullValue()));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(stage), eq(stage+
+        .convertAndSend(eq(stage), eq(stage+ "_" +
             queueConfig.getExercise().getImageToConvert()), eq(TASK_DTO));
   }
 
@@ -134,11 +135,11 @@ class ExerciseControllerTest extends BaseIntegrationTest {
 
     doNothing()
         .when(rabbitTemplate)
-        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+        .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
             eq(TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URL))
+        WireMock.post(urlEqualTo(BASE_URLBACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
             .willReturn(aResponse().withStatus(400).withBody(getString(defaultError))));
@@ -149,7 +150,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .andExpect(jsonPath("$.message", is("error message")));
 
     verify(rabbitTemplate, never())
-        .convertAndSend(eq(stage), eq(stage + queueConfig.getExercise().getImageToConvert()),
+        .convertAndSend(eq(stage), eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
             eq(TASK_DTO));
   }
 

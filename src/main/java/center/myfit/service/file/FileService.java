@@ -65,13 +65,12 @@ public class FileService {
     try {
       log.info("Загружаем файл: {}", objectName);
 
-      // Загрузка файла в MinIO
       minioClient.putObject(
           PutObjectArgs.builder()
               .bucket(config.getBucketName())
               .object(objectName)
               .stream(inputStream, inputStream.available(), -1)
-              .contentType(mediaType.toString()) //проверить дебаг
+              .contentType(mediaType.toString())
               .build()
       );
 

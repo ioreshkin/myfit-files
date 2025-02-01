@@ -40,7 +40,7 @@ public class ExerciseService {
     ImageTaskDto imageTask = mapper.toImageTask(exerciseDto);
 
     rabbitTemplate.convertAndSend(stage,
-        stage + config.getExercise().getImageToConvert(), imageTask);
+        stage +  "_" + config.getExercise().getImageToConvert(), imageTask);
   }
 
   /** Отправка в очередь myfit-back на сохранение. */
@@ -51,7 +51,7 @@ public class ExerciseService {
     ExerciseImageDto exerciseImageDto = exerciseImageMapper
         .toExerciseImageDto(imageTask.exerciseId(), originalUrl, mobileUrl, desktopUrl);
 
-    rabbitTemplate.convertAndSend(stage, stage + config.getExercise().getImageToSave(),
+    rabbitTemplate.convertAndSend(stage, stage + "_" + config.getExercise().getImageToSave(),
         exerciseImageDto);
   }
 }
