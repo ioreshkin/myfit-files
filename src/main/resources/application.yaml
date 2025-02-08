@@ -50,8 +50,6 @@ minio:
   access-key: ${MINIO_ACCESS_KEY:fit}
   secret-key: ${MINIO_SECRET_KEY:miniopassword}
   bucket-name: ${MINIO_BUCKET_NAME:fitcycle}
-  public-folder: public
-
 
 queue:
   exercise:

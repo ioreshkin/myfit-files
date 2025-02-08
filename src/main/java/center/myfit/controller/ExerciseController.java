@@ -1,7 +1,6 @@
 package center.myfit.controller;
 
 import center.myfit.facade.exercise.ExerciseFacade;
-import center.myfit.mapper.ExerciseMapper;
 import center.myfit.starter.dto.ExerciseDto;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ExerciseController {
 
   private final ExerciseFacade exerciseFacade;
-  private final ExerciseMapper mapper;
 
   /** Обработка запроса POST /exercise. */
   @PostMapping(
@@ -36,8 +34,7 @@ public class ExerciseController {
       @RequestPart(value = "dto") @Valid ExerciseDto exerciseDto) {
     log.info("Запрос на создание упражнения {}", exerciseDto.title());
     try {
-      return exerciseFacade.createExercise(
-          file != null ? file.getInputStream() : null, exerciseDto);
+      return exerciseFacade.createExercise(file, exerciseDto);
     } catch (IOException e) {
       throw new RuntimeException("Ошибка при обработке загружаемого файла", e);
     }

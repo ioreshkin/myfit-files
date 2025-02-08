@@ -2,9 +2,9 @@ package center.myfit.enums;
 
 /** Енам размеров изображений. */
 public enum ImageSize {
-  ORIGINAL("original"),
-  MOBILE("mobile"),
-  DESKTOP("desktop");
+  ORIGINAL("o"),
+  MOBILE("m"),
+  DESKTOP("d");
 
   private String postfix;
 
