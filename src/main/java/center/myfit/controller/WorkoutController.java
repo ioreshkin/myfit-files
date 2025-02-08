@@ -1,7 +1,7 @@
 package center.myfit.controller;
 
-import center.myfit.facade.exercise.ExerciseFacade;
-import center.myfit.starter.dto.ExerciseDto;
+import center.myfit.facade.workout.WorkoutFacade;
+import center.myfit.starter.dto.WorkoutDto;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -15,26 +15,25 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/** Контроллер для работы с упражнениями. */
+/** Контроллер для работы с тренировками. */
 @Slf4j
 @RestController
-@RequestMapping("${api-prefix}/exercise")
+@RequestMapping("${api-prefix}/workout")
 @RequiredArgsConstructor
 @Validated
-public class ExerciseController {
-
-  private final ExerciseFacade exerciseFacade;
+public class WorkoutController {
+  private final WorkoutFacade workoutFacade;
 
   /** Обработка запроса POST /exercise. */
   @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<ExerciseDto> createExercise(
+  public ResponseEntity<WorkoutDto> createExercise(
       @RequestPart(value = "file", required = false) MultipartFile file,
-      @RequestPart(value = "dto") @Valid ExerciseDto exerciseDto) {
+      @RequestPart(value = "dto") @Valid WorkoutDto workoutDto) {
 
-    log.info("Запрос на создание упражнения {}", exerciseDto.title());
+    log.info("Запрос на создание упражнения {}", workoutDto.title());
 
     try {
-      return exerciseFacade.createExercise(file, exerciseDto);
+      return workoutFacade.createExercise(file, workoutDto);
     } catch (IOException e) {
       throw new RuntimeException("Ошибка при обработке загружаемого файла", e);
     }

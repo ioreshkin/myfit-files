@@ -24,11 +24,7 @@ public class DownloadFileService {
       log.info("Загружаем файл из MinIO: {}", objectName);
 
       return minioClient.getObject(
-          GetObjectArgs.builder()
-              .bucket(config.getBucketName())
-              .object(objectName)
-              .build()
-      );
+          GetObjectArgs.builder().bucket(config.getBucketName()).object(objectName).build());
     } catch (Exception e) {
       throw new DownloadException("Ошибка загрузки файла из MinIO", e);
     }

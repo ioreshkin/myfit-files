@@ -1,5 +1,6 @@
 package center.myfit.service.file;
 
+
 import center.myfit.config.MinioProperties;
 import center.myfit.enums.ImageSize;
 import center.myfit.exception.UploadException;
@@ -37,8 +38,10 @@ public class FileService {
       log.info("Загружаем файл: {}", objectName);
 
       minioClient.putObject(
-          PutObjectArgs.builder().bucket(config.getBucketName()).object(objectName).stream(
-                  inputStream, inputStream.available(), -1)
+          PutObjectArgs.builder()
+              .bucket(config.getBucketName())
+              .object(objectName)
+              .stream(inputStream, inputStream.available(), -1)
               .contentType(mediaType.toString())
               .build());
 

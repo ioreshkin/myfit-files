@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -30,29 +31,35 @@ public class FileFacade {
   private final SizeImageProperties config;
 
   /**
-   * Загрузка из MinIO, конвертивароние файлов и отправка ссылок на сохранение для
-   * обогащения exerciseImageDto ссылками mobile и desktop.
+   * Загрузка из MinIO, конвертивароние файлов и отправка ссылок на сохранение для обогащения
+   * exerciseImageDto ссылками mobile и desktop.
    */
-  public void downloadAndConvertFile(ImageTaskDto imageTask) {
+  public void convertImage(ImageTaskDto imageTask) {
     String originalUrl = imageTask.image().original();
+    String extension = FileNameUtils.getExtension(originalUrl);
 
     byte[] originalImageStream = null;
     try {
       originalImageStream = IOUtils.toByteArray(downloadFileService.downloadFile(originalUrl));
       try (InputStream mobileImageStream =
-              convertFileService.convertSize(new ByteArrayInputStream(originalImageStream),
-                  config.getMobile().getWidth(), config.getMobile().getHeight());
-          InputStream desktopImageStream = convertFileService
-              .convertSize(new ByteArrayInputStream(originalImageStream),
-              config.getDesktop().getWidth(), config.getDesktop().getHeight());) {
+              convertFileService.convertSize(
+                  new ByteArrayInputStream(originalImageStream),
+                  config.getMobile().getWidth(),
+                  config.getMobile().getHeight());
+          InputStream desktopImageStream =
+              convertFileService.convertSize(
+                  new ByteArrayInputStream(originalImageStream),
+                  config.getDesktop().getWidth(),
+                  config.getDesktop().getHeight())) {
 
-        String mobileUrl = fileService.uploadFile(mobileImageStream, ImageSize.MOBILE,
-            "mobile_image.jpg", MediaType.IMAGE_JPEG);
-        String desktopUrl = fileService.uploadFile(desktopImageStream, ImageSize.DESKTOP,
-            "desktop_image.jpg", MediaType.IMAGE_JPEG);
+        String mobileUrl =
+            fileService.uploadFile(
+                mobileImageStream, ImageSize.MOBILE, "mobile_image.jpg", MediaType.IMAGE_JPEG);
+        String desktopUrl =
+            fileService.uploadFile(
+                desktopImageStream, ImageSize.DESKTOP, "desktop_image.jpg", MediaType.IMAGE_JPEG);
 
-        exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl,
-            desktopUrl);
+        exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl, desktopUrl);
       }
     } catch (IOException e) {
       log.error("ошибка при создании массива байт: {}", e.getMessage());
@@ -60,4 +67,3 @@ public class FileFacade {
     }
   }
 }
-

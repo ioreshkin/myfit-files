@@ -55,6 +55,9 @@ queue:
   exercise:
     imageToConvert: files_files_exercise_image
     imageToSave: files_back_exercise_image
+  workout:
+    imageToConvert: files_files_workout_image
+    imageToSave: files_back_workout_image
 
 image-size:
   exercise:

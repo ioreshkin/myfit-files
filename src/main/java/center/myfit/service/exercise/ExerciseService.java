@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-/** Сервис для передачи загруженного файла для дальнейшей обработки. */
+/** Сервис для работы с упражнениями. */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,13 +22,14 @@ public class ExerciseService {
 
   @Value("${stage}")
   private String stage;
+
   private final MyFitBackClient myFitBackClient;
   private final RabbitTemplate rabbitTemplate;
   private final ImageTaskMapper mapper;
   private final ExerciseImageMapper exerciseImageMapper;
   private final QueueProperties config;
 
-  /** Отправка запроса на валидацию. */
+  /** Отправка запроса на сохранение упражнения. */
   public ResponseEntity<ExerciseDto> saveExercise(ExerciseDto exerciseDto) {
     return myFitBackClient.saveExercise(exerciseDto);
   }
@@ -39,19 +40,21 @@ public class ExerciseService {
 
     ImageTaskDto imageTask = mapper.toImageTask(exerciseDto);
 
-    rabbitTemplate.convertAndSend(stage,
-        stage +  "_" + config.getExercise().getImageToConvert(), imageTask);
+    rabbitTemplate.convertAndSend(
+        stage, stage + "_" + config.getExercise().getImageToConvert(), imageTask);
   }
 
   /** Отправка в очередь myfit-back на сохранение. */
-  public void sendExerciseImageToSave(ImageTaskDto imageTask, String originalUrl,
-                                      String mobileUrl, String desktopUrl) {
+  public void sendExerciseImageToSave(
+      ImageTaskDto imageTask, String originalUrl, String mobileUrl, String desktopUrl) {
+
     log.info("отправка обогащенного exerciseImageDto на сохранение");
 
-    ExerciseImageDto exerciseImageDto = exerciseImageMapper
-        .toExerciseImageDto(imageTask.exerciseId(), originalUrl, mobileUrl, desktopUrl);
+    ExerciseImageDto exerciseImageDto =
+        exerciseImageMapper.toExerciseImageDto(
+            imageTask.objectId(), originalUrl, mobileUrl, desktopUrl);
 
-    rabbitTemplate.convertAndSend(stage, stage + "_" + config.getExercise().getImageToSave(),
-        exerciseImageDto);
+    rabbitTemplate.convertAndSend(
+        stage, stage + "_" + config.getExercise().getImageToSave(), exerciseImageDto);
   }
 }

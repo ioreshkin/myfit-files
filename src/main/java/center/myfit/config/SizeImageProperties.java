@@ -10,20 +10,15 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "image-size.exercise")
 public class SizeImageProperties {
 
-  /**
-   * image-size.
-   */
+  /** image-size. */
   private Size mobile;
+
   private Size desktop;
 
-
-  /**
-   * Size.
-   */
+  /** Size. */
   @Data
   public static class Size {
     private int width;
     private int height;
   }
 }
-

@@ -1,8 +1,6 @@
 package center.myfit.exception;
 
-/**
- * Ошибка при конвертировании файла.
- */
+/** Ошибка при конвертировании файла. */
 public class ConvertException extends RuntimeException {
 
   /**
@@ -18,10 +16,9 @@ public class ConvertException extends RuntimeException {
    * Конструктор с информационным сообщением и причиной.
    *
    * @param message - сообщение о причинах ошибки.
-   * @param cause   - причина ошибки.
+   * @param cause - причина ошибки.
    */
   public ConvertException(String message, Throwable cause) {
     super(message, cause);
   }
 }
-

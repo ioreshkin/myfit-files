@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "keycloakId": "123",
+  "title": "workout title",
+  "exercises": [
+    {
+      "exerciseId": 2,
+      "order": 1,
+      "iterations": [
+        {
+          "repeats": 5,
+          "weight": 10.0
+        }
+      ]
+    }
+  ],
+  "description": "workout description",
+  "image": null
+}
