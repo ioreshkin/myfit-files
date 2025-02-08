@@ -40,6 +40,20 @@ public class ResourcePool extends AbstractTestResourcePool {
   public static final Resource savedWorkout =
       new ClassPathResource("json/workout/saved-workout.json");
 
+  //image
+  public static final Resource defaultExerciseImageTask =
+          new ClassPathResource("json/image/default-exercise-image-task.json");
+  public static final Resource defaultWorkoutImageTask =
+          new ClassPathResource("json/image/default-workout-image-task.json");
+  public static final Resource expectedExerciseImageDto =
+          new ClassPathResource("json/image/expected-exercise-image-dto.json");
+  public static final Resource expectedWorkoutImageDto =
+          new ClassPathResource("json/image/expected-workout-image-dto.json");
+  public static final Resource workoutGifImageTask =
+          new ClassPathResource("json/image/workout-gif-image-task.json");
+  public static final Resource exerciseGifImageTask =
+          new ClassPathResource("json/image/exercise-gif-image-task.json");
+
   static {
     try {
       defaultImage =

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-/** TaskListener, слушает задачу из Rabbit files_files_exercise_image. */
+/** TaskListener, получает ImageTask из Rabbit. */
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -19,11 +19,21 @@ public class ImageTaskListener {
 
   /** Конвертация original формата изображения и отправка на сохранение в myfit-back. */
   @RabbitListener(queues = "${stage}" + "_files_files_exercise_image_q")
-  public void convertImage(ImageTaskDto imageTask) {
+  public void convertExerciseImage(ImageTaskDto imageTask) {
     log.info(
-        "принята задача из очереди {} , на конвертацию изображения с exerciseId: {}",
+        "принята задача из очереди {}, на конвертацию изображения упражнения для objectId: {}",
         config.getExercise().getImageToConvert(),
         imageTask.objectId());
+    fileFacade.convertImage(imageTask);
+  }
+
+  /** Конвертация original формата изображения и отправка на сохранение в myfit-back. */
+  @RabbitListener(queues = "${stage}" + "_files_files_workout_image_q")
+  public void convertWorkoutImage(ImageTaskDto imageTask) {
+    log.info(
+            "принята задача из очереди {}, на конвертацию изображения тренировки для objectId: {}",
+            config.getExercise().getImageToConvert(),
+            imageTask.objectId());
     fileFacade.convertImage(imageTask);
   }
 }

@@ -2,9 +2,11 @@ package center.myfit.service.workout;
 
 import center.myfit.config.QueueProperties;
 import center.myfit.mapper.ImageTaskMapper;
+import center.myfit.mapper.WorkoutImageMapper;
 import center.myfit.service.feignclient.MyFitBackClient;
 import center.myfit.starter.dto.ImageTaskDto;
 import center.myfit.starter.dto.WorkoutDto;
+import center.myfit.starter.dto.WorkoutImageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,6 +27,7 @@ public class WorkoutService {
   private final QueueProperties config;
   private final RabbitTemplate rabbitTemplate;
   private final ImageTaskMapper mapper;
+  private final WorkoutImageMapper workoutImageMapper;
 
   /** Отправка запроса на сохранение тренировки. */
   public ResponseEntity<WorkoutDto> saveExercise(WorkoutDto workoutDto) {
@@ -39,5 +42,19 @@ public class WorkoutService {
 
     rabbitTemplate.convertAndSend(
         stage, stage + "_" + config.getWorkout().getImageToConvert(), imageTask);
+  }
+
+  /** Отправка в очередь myfit-back на сохранение. */
+  public void sendExerciseImageToSave(
+      ImageTaskDto imageTask, String originalUrl, String mobileUrl, String desktopUrl) {
+
+    log.info("отправка обогащенного workoutImageDto на сохранение");
+
+    WorkoutImageDto workoutImageDto =
+        workoutImageMapper.toWorkoutImageDto(
+            imageTask.objectId(), originalUrl, mobileUrl, desktopUrl);
+
+    rabbitTemplate.convertAndSend(
+        stage, stage + "_" + config.getWorkout().getImageToSave(), workoutImageDto);
   }
 }
