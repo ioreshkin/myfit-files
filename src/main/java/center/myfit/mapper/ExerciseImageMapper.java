@@ -9,11 +9,11 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface ExerciseImageMapper {
 
-  /** Обогащение дто ссылками  mobileUrl и desktopUrl. */
-  @Mapping(target = "image",
+  /** Обогащение дто ссылками mobileUrl и desktopUrl. */
+  @Mapping(
+      target = "image",
       expression = "java(new ExerciseImageDto.ImageDto(originalUrl, mobileUrl, desktopUrl))")
-
   @Mapping(target = "exerciseId", source = "exerciseId")
-  ExerciseImageDto toExerciseImageDto(@NotBlank Long exerciseId, String originalUrl,
-                                      String mobileUrl, String desktopUrl);
+  ExerciseImageDto toExerciseImageDto(
+      @NotBlank Long exerciseId, String originalUrl, String mobileUrl, String desktopUrl);
 }

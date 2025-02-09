@@ -12,12 +12,20 @@ public class QueueProperties {
   /** Exercise. */
   private Exercise exercise;
 
+  /** Workout. */
+  private Workout workout;
+
   /** Exercise. */
   @Data
   public static class Exercise {
     private String imageToConvert;
     private String imageToSave;
   }
+
+  /** Workout. */
+  @Data
+  public static class Workout {
+    private String imageToConvert;
+    private String imageToSave;
+  }
 }
-
-

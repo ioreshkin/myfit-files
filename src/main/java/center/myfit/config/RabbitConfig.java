@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitConfig {
 
-  /**  Создание Jackson2JsonMessageConverter. */
+  /** Создание Jackson2JsonMessageConverter. */
   @Bean
   public Jackson2JsonMessageConverter converter() {
     return new Jackson2JsonMessageConverter();

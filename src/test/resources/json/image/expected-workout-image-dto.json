@@ -1,0 +1,8 @@
+{
+  "workoutId": 1,
+  "image": {
+    "original": "public/123.gif",
+    "mobile": "public/123.gif",
+    "desktop": "public/123.gif"
+  }
+}

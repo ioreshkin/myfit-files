@@ -12,4 +12,3 @@ public class TuzProperties {
   private String username;
   private String password;
 }
-
