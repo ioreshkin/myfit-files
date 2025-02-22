@@ -6,3 +6,6 @@ myfit-back:
 logging:
   level:
     center.myfit.service.feignclient.MyFitBackClient: DEBUG
+
+wiremock:
+  reset-mappings-after-each-test: true

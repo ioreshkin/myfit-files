@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: stage-myfit-files
-          image: "nexus.fitcycle.online/myfit-files:0.2-SNAPSHOT"
+          image: "nexus.fitcycle.online/myfit-files:0.3-SNAPSHOT"
           imagePullPolicy: Always
           ports:
             - name: http

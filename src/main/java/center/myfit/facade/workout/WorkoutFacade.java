@@ -42,7 +42,7 @@ public class WorkoutFacade {
       enrichedDto = workoutMapper.enrichOriginal(enrichedDto, path);
     }
 
-    ResponseEntity<WorkoutDto> response = workoutService.saveExercise(enrichedDto);
+    ResponseEntity<WorkoutDto> response = workoutService.saveWorkout(enrichedDto);
 
     if (file != null) {
       workoutService.sendImageTaskToConvert(response.getBody());

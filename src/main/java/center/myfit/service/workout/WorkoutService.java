@@ -30,7 +30,7 @@ public class WorkoutService {
   private final WorkoutImageMapper workoutImageMapper;
 
   /** Отправка запроса на сохранение тренировки. */
-  public ResponseEntity<WorkoutDto> saveExercise(WorkoutDto workoutDto) {
+  public ResponseEntity<WorkoutDto> saveWorkout(WorkoutDto workoutDto) {
     return myFitBackClient.saveExercise(workoutDto);
   }
 
@@ -45,7 +45,7 @@ public class WorkoutService {
   }
 
   /** Отправка в очередь myfit-back на сохранение. */
-  public void sendExerciseImageToSave(
+  public void sendWorkoutImageToSave(
       ImageTaskDto imageTask, String originalUrl, String mobileUrl, String desktopUrl) {
 
     log.info("отправка обогащенного workoutImageDto на сохранение");

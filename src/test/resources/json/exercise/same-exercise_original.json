@@ -1,0 +1,12 @@
+{
+  "id": "{{jsonPath request.body '$.id'}}",
+  "keycloakId": "{{jsonPath request.body '$.keycloakId'}}",
+  "title": "{{jsonPath request.body '$.title'}}",
+  "description": "{{jsonPath request.body '$.description'}}",
+  "videoUrl": "{{jsonPath request.body '$.videoUrl'}}",
+  "image": {
+    "original": "{{jsonPath request.body '$.image.original'}}",
+    "mobile": null,
+    "desktop": null
+  }
+}
