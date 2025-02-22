@@ -5,9 +5,12 @@ import static center.myfit.util.TestConstants.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -15,6 +18,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +36,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.WebApplicationContext;
 
 class ExerciseControllerTest extends BaseIntegrationTest {
@@ -39,7 +44,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
   private static final ImageTaskDto EXERCISE_IMAGE_TASK_DTO =
       new ImageTaskDto(1L, EntityType.EXERCISE, new ImageTaskDto.ImageDto("public/123.jpg"));
   private static final String BASE_URL = "/api/files/exercise";
-  private static final String BASE_URLBACK = "/api/back/exercise";
+  private static final String BASE_URL_BACK = "/api/back/exercise";
 
   @Value("${stage}")
   private String stage;
@@ -64,17 +69,13 @@ class ExerciseControllerTest extends BaseIntegrationTest {
             eq(EXERCISE_IMAGE_TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URLBACK))
+        WireMock.post(urlEqualTo(BASE_URL_BACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(
                 matchingJsonPath(
                     "$.[?(@.title == 'exercise title' " + "&& @.keycloakId == '123')]"))
             .withRequestBody(matchingJsonPath("$.image.original"))
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withBody(getString(savedExerciseOriginal))
-                    .withHeader("Content-Type", APPLICATION_JSON_VALUE)));
+            .willReturn(okJson(getString(savedExerciseOriginal))));
 
     mockMvc
         .perform(multipart(BASE_URL).file(defaultImage).file(defaultExercisePart).with(POST))
@@ -106,14 +107,10 @@ class ExerciseControllerTest extends BaseIntegrationTest {
             eq(EXERCISE_IMAGE_TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URLBACK))
+        WireMock.post(urlEqualTo(BASE_URL_BACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withBody(getString(savedExercise))
-                    .withHeader("Content-Type", APPLICATION_JSON_VALUE)));
+            .willReturn(okJson(getString(savedExercise))));
 
     mockMvc
         .perform(multipart(BASE_URL).file(defaultExercisePart).with(POST))
@@ -145,7 +142,7 @@ class ExerciseControllerTest extends BaseIntegrationTest {
             eq(EXERCISE_IMAGE_TASK_DTO));
 
     stubFor(
-        WireMock.post(urlEqualTo(BASE_URLBACK))
+        WireMock.post(urlEqualTo(BASE_URL_BACK))
             .withBasicAuth(config.getUsername(), config.getPassword())
             .withRequestBody(equalToJson(getString(defaultExerciseKeycloakId)))
             .willReturn(aResponse().withStatus(400).withBody(getString(defaultError))));
@@ -189,5 +186,152 @@ class ExerciseControllerTest extends BaseIntegrationTest {
         .perform(multipart(BASE_URL).file(onlyDescriptionExercisePart).with(POST))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is("Заголовок не может быть пустым")));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturnEnrichedDtoWithOriginalLink() throws Exception {
+    when(minioClient.putObject(any())).thenReturn(null);
+
+    doNothing()
+        .when(rabbitTemplate)
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            any(ImageTaskDto.class));
+
+    stubFor(
+        WireMock.put(urlEqualTo(BASE_URL_BACK))
+            .withBasicAuth(config.getUsername(), config.getPassword())
+            .withRequestBody(
+                matchingJsonPath(
+                    "$.[?(@.title == 'exercise title' " + "&& @.keycloakId == '123')]"))
+            .withRequestBody(matchingJsonPath("$.image.original"))
+            .willReturn(
+                aResponse()
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .withBody(getString(sameExerciseOriginal))
+                    .withTransformers("response-template")));
+
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultImage).file(defaultExercisePartWithId).with(PUT))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(12)))
+        .andExpect(jsonPath("$.keycloakId", is("123")))
+        .andExpect(jsonPath("$.title", is("exercise title")))
+        .andExpect(jsonPath("$.description", is("exercise description")))
+        .andExpect(jsonPath("$.videoUrl", is("https://you.tube/abc")))
+        .andExpect(jsonPath("$.image.original", notNullValue()))
+        .andExpect(jsonPath("$.image.original", not("public/123.jpg")));
+
+    verify(rabbitTemplate, times(1))
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            any(ImageTaskDto.class));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturnEnrichedDto() throws Exception {
+    when(minioClient.putObject(any())).thenReturn(null);
+
+    doNothing()
+        .when(rabbitTemplate)
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            eq(EXERCISE_IMAGE_TASK_DTO));
+
+    stubFor(
+        WireMock.put(urlEqualTo(BASE_URL_BACK))
+            .withBasicAuth(config.getUsername(), config.getPassword())
+            .withRequestBody(equalToJson(getString(defaultExerciseKeycloakIdWithId)))
+            .willReturn(okJson(getString(savedExercise))));
+
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultExercisePartWithId).with(PUT))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.keycloakId", is("123")))
+        .andExpect(jsonPath("$.title", is("exercise title")))
+        .andExpect(jsonPath("$.description", is("exercise description")))
+        .andExpect(jsonPath("$.videoUrl", is("https://you.tube/abc")))
+        .andExpect(jsonPath("$.image", Matchers.nullValue()));
+
+    verify(rabbitTemplate, never())
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            eq(EXERCISE_IMAGE_TASK_DTO));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturn400_whenBackReturn400() throws Exception {
+    when(minioClient.putObject(any())).thenReturn(null);
+
+    doNothing()
+        .when(rabbitTemplate)
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            eq(EXERCISE_IMAGE_TASK_DTO));
+
+    stubFor(
+        WireMock.put(urlEqualTo(BASE_URL_BACK))
+            .withBasicAuth(config.getUsername(), config.getPassword())
+            .withRequestBody(equalToJson(getString(defaultExerciseKeycloakIdWithId)))
+            .willReturn(aResponse().withStatus(400).withBody(getString(defaultError))));
+
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultExercisePartWithId).with(PUT))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("error message")));
+
+    verify(rabbitTemplate, never())
+        .convertAndSend(
+            eq(stage),
+            eq(stage + "_" + queueConfig.getExercise().getImageToConvert()),
+            eq(EXERCISE_IMAGE_TASK_DTO));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturn500_whenUploadFail() throws Exception {
+    when(minioClient.putObject(any())).thenThrow(new IOException());
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultExercisePartWithId).file(defaultImage).with(PUT))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$.message", is("Ошибка загрузки файла")));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturn400_whenNoDtoPresent() throws Exception {
+    when(minioClient.putObject(any())).thenThrow(new IOException());
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultImage).with(PUT))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("Не заполнены обязательные поля формы!")));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturn400_whenNoTitlePresent() throws Exception {
+    mockMvc
+        .perform(multipart(BASE_URL).file(onlyDescriptionExercisePart).with(PUT))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("Заголовок не может быть пустым")));
+  }
+
+  @Test
+  @WithMockUser(keycloakId = KEYCLOAK_ID)
+  void updateExercise_shouldReturn400_whenNoIdPresent() throws Exception {
+    mockMvc
+        .perform(multipart(BASE_URL).file(defaultExercisePart).with(PUT))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is("Не заполнен id упражнения")));
   }
 }

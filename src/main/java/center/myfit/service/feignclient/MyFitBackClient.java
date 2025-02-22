@@ -5,6 +5,7 @@ import center.myfit.starter.dto.WorkoutDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /** Настройка FeignClient для взаимодействия с myfit-back. */
@@ -18,4 +19,8 @@ public interface MyFitBackClient {
   /** Сохранение тренировки. */
   @PostMapping("/workout")
   ResponseEntity<WorkoutDto> saveExercise(@RequestBody WorkoutDto workoutDto);
+
+  /** Обновление упражнения. */
+  @PutMapping("/exercise")
+  ResponseEntity<ExerciseDto> updateExercise(@RequestBody ExerciseDto exerciseDto);
 }

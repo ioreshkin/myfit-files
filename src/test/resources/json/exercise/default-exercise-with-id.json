@@ -1,6 +1,6 @@
 {
-  "id": 1,
-  "keycloakId": "123",
+  "id": 12,
+  "keycloakId": null,
   "title": "exercise title",
   "description": "exercise description",
   "videoUrl": "https://you.tube/abc",

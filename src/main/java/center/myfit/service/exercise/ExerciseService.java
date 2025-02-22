@@ -34,6 +34,11 @@ public class ExerciseService {
     return myFitBackClient.saveExercise(exerciseDto);
   }
 
+  /** Отправка запроса на обновление упражнения. */
+  public ResponseEntity<ExerciseDto> updateExercise(ExerciseDto exerciseDto) {
+    return myFitBackClient.updateExercise(exerciseDto);
+  }
+
   /** Отправка в очередь Rabbit на конвертирование. */
   public void sendImageTaskToConvert(ExerciseDto exerciseDto) {
     log.info("отправка imageTask на конвертирование");

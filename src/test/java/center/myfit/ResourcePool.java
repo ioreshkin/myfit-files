@@ -8,6 +8,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 public class ResourcePool extends AbstractTestResourcePool {
   public static final MockMultipartFile defaultExercisePart;
+  public static final MockMultipartFile defaultExercisePartWithId;
   public static final MockMultipartFile defaultWorkoutPart;
   public static final MockMultipartFile defaultImage;
   public static final MockMultipartFile onlyDescriptionExercisePart;
@@ -18,10 +19,16 @@ public class ResourcePool extends AbstractTestResourcePool {
   // exercise
   public static final Resource defaultExercise =
       new ClassPathResource("json/exercise/default-exercise.json");
+  public static final Resource defaultExerciseWithId =
+      new ClassPathResource("json/exercise/default-exercise-with-id.json");
+  public static final Resource defaultExerciseKeycloakIdWithId =
+          new ClassPathResource("json/exercise/default-exercise-keycloak-id-with-id.json");
   public static final Resource defaultExerciseKeycloakId =
       new ClassPathResource("json/exercise/default-exercise_keycloakId.json");
   public static final Resource savedExerciseOriginal =
       new ClassPathResource("json/exercise/saved-exercise_original.json");
+  public static final Resource sameExerciseOriginal =
+          new ClassPathResource("json/exercise/same-exercise_original.json");
   public static final Resource savedExercise =
       new ClassPathResource("json/exercise/saved-exercise.json");
   public static final Resource image = new ClassPathResource("image/img.png");
@@ -40,19 +47,19 @@ public class ResourcePool extends AbstractTestResourcePool {
   public static final Resource savedWorkout =
       new ClassPathResource("json/workout/saved-workout.json");
 
-  //image
+  // image
   public static final Resource defaultExerciseImageTask =
-          new ClassPathResource("json/image/default-exercise-image-task.json");
+      new ClassPathResource("json/image/default-exercise-image-task.json");
   public static final Resource defaultWorkoutImageTask =
-          new ClassPathResource("json/image/default-workout-image-task.json");
+      new ClassPathResource("json/image/default-workout-image-task.json");
   public static final Resource expectedExerciseImageDto =
-          new ClassPathResource("json/image/expected-exercise-image-dto.json");
+      new ClassPathResource("json/image/expected-exercise-image-dto.json");
   public static final Resource expectedWorkoutImageDto =
-          new ClassPathResource("json/image/expected-workout-image-dto.json");
+      new ClassPathResource("json/image/expected-workout-image-dto.json");
   public static final Resource workoutGifImageTask =
-          new ClassPathResource("json/image/workout-gif-image-task.json");
+      new ClassPathResource("json/image/workout-gif-image-task.json");
   public static final Resource exerciseGifImageTask =
-          new ClassPathResource("json/image/exercise-gif-image-task.json");
+      new ClassPathResource("json/image/exercise-gif-image-task.json");
 
   static {
     try {
@@ -62,6 +69,9 @@ public class ResourcePool extends AbstractTestResourcePool {
       defaultExercisePart =
           new MockMultipartFile(
               "dto", "", MediaType.APPLICATION_JSON_VALUE, defaultExercise.getInputStream());
+      defaultExercisePartWithId =
+          new MockMultipartFile(
+              "dto", "", MediaType.APPLICATION_JSON_VALUE, defaultExerciseWithId.getInputStream());
       onlyDescriptionExercisePart =
           new MockMultipartFile(
               "dto",

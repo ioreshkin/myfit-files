@@ -87,7 +87,7 @@ public class FileFacade {
       case EXERCISE ->
           exerciseService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl, desktopUrl);
       case WORKOUT ->
-          workoutService.sendExerciseImageToSave(imageTask, originalUrl, mobileUrl, desktopUrl);
+          workoutService.sendWorkoutImageToSave(imageTask, originalUrl, mobileUrl, desktopUrl);
       default -> throw new ConvertException("Unknown entity type!");
     }
   }
